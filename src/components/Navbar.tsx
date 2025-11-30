@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Menu, X } from "lucide-react";
-import logo from "/logo.svg";
+import logo from "/logo.png";
 
 interface NavbarProps {
   onLoginClick?: () => void;
@@ -36,8 +36,13 @@ export function Navbar({ onLoginClick, onNavigate }: NavbarProps) {
           {/* Logo */}
           <div className="flex-shrink-0">
             <button onClick={() => onNavigate?.("landing")} className="focus:outline-none">
-              <img src={logo} alt="Rede Nave" className="h-12 w-12" />
+              <img src={logo} alt="Rede Nave" className="h-12 w-12" style={{ animation: 'spin 3s linear infinite reverse' }} />
             </button>
+          </div>
+
+          {/* Mobile Title */}
+          <div className="md:hidden flex-1 text-center">
+            <span className="text-lg font-semibold text-[#6a2e99]">Rede Nave</span>
           </div>
 
           {/* Desktop Navigation */}
@@ -118,7 +123,10 @@ export function Navbar({ onLoginClick, onNavigate }: NavbarProps) {
             </button>
             <div className="px-3 pt-2">
               <Button
-                onClick={onLoginClick}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  onLoginClick?.();
+                }}
                 className="w-full bg-[#6a2e99] hover:bg-[#8e44ad]"
               >
                 Entrar

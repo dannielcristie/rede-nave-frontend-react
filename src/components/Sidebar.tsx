@@ -1,6 +1,6 @@
 import { Home, BookOpen, Calendar, Award, User, BarChart, Users, Settings, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
-import logo from "/logo.svg";
+import logo from "/logo.png";
 
 interface SidebarProps {
   role: "student" | "teacher" | "admin";

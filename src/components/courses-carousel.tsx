@@ -3,10 +3,21 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Star, Clock, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function CoursesCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const courses = [
     {
@@ -71,7 +82,7 @@ export function CoursesCarousel() {
     }
   ];
 
-  const cardsPerView = 3;
+  const cardsPerView = isMobile ? 1 : 3;
   const maxIndex = Math.max(0, courses.length - cardsPerView);
 
   const nextSlide = () => {
@@ -92,37 +103,37 @@ export function CoursesCarousel() {
           </p>
         </div>
 
-        <div className="relative px-12">
+        <div className="relative px-4 sm:px-12">
           {/* Navigation Arrows */}
           <button
             onClick={prevSlide}
             disabled={currentIndex === 0}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 sm:p-3 shadow-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Anterior"
           >
-            <ChevronLeft className="h-6 w-6 text-[#6a2e99]" />
+            <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6 text-[#6a2e99]" />
           </button>
 
           <button
             onClick={nextSlide}
             disabled={currentIndex === maxIndex}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 sm:p-3 shadow-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Próximo"
           >
-            <ChevronRight className="h-6 w-6 text-[#6a2e99]" />
+            <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6 text-[#6a2e99]" />
           </button>
 
           {/* Carousel */}
           <div className="overflow-hidden">
             <div
-              className="flex transition-transform duration-500 ease-in-out gap-6"
-              style={{ transform: `translateX(-${currentIndex * (100 / cardsPerView + 2)}%)` }}
+              className="flex transition-transform duration-500 ease-in-out gap-0 lg:gap-6"
+              style={{ transform: `translateX(-${currentIndex * (isMobile ? 100 : 100 / cardsPerView + 2)}%)` }}
             >
               {courses.map((course, index) => (
-                <div key={index} className="w-1/3 flex-shrink-0">
-                  <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
+                <div key={index} className="w-full lg:w-1/3 flex-shrink-0 px-2 lg:px-0">
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full max-w-2xl lg:max-w-none mx-auto">
                     <CardHeader className="p-0">
-                      <div className="relative h-48 overflow-hidden">
+                      <div className="relative h-64 lg:h-48 overflow-hidden">
                         <ImageWithFallback
                           src={course.image}
                           alt={course.title}
