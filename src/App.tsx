@@ -1,120 +1,95 @@
 import { useState } from "react";
-import { Navbar } from "./components/Navbar";
+import { Routes, Route, Navigate, useLocation, useNavigate, Outlet } from "react-router-dom";
+import { Navbar } from "./components/navbar";
 import { About } from "./components/about";
 import { CoursesCarousel } from "./components/courses-carousel";
 import { EventsCarousel } from "./components/events-carousel";
 import { Contact } from "./components/contact";
-import { Footer } from "./components/Footer";
-import { Login } from "./components/Login";
-import { Sidebar } from "./components/Sidebar";
+import { Footer } from "./components/footer";
+import { Login } from "./components/login";
+import { Sidebar } from "./components/sidebar";
 import { StudentDashboard } from "./components/student/dashboard";
 import { CoursePlayer } from "./components/student/course-player";
 import { TeacherDashboard } from "./components/teacher/dashboard";
 import { AdminDashboard } from "./components/admin/dashboard";
 
 type UserRole = "student" | "teacher" | "admin" | null;
-type Page = "landing" | "login" | "dashboard" | "my-courses" | "events" | "certificates" | "profile" | "classes" | "students" | "reports" | "stats" | "users" | "courses" | "settings" | "course-player";
+
+function LandingPage() {
+  return (
+    <div className="min-vh-100">
+      <Navbar />
+      <main>
+        <CoursesCarousel />
+        <EventsCarousel />
+        <About />
+        <Contact />
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+function ProtectedLayout({ role, onLogout }: { role: UserRole, onLogout: () => void }) {
+  if (!role) return <Navigate to="/login" />;
+
+  return (
+    <div className="d-flex min-vh-100" style={{ backgroundColor: '#f8f9fa' }}>
+      <Sidebar role={role} onLogout={onLogout} />
+      <main className="flex-fill main-with-sidebar">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+function PlaceholderPage() {
+  const location = useLocation();
+  const pageName = location.pathname.split("/").pop();
+  return (
+    <div className="p-4">
+      <div className="bg-white rounded border border-2 border-dashed p-5 text-center" style={{ borderColor: '#dee2e6' }}>
+        <p className="text-muted mb-0">
+          Página "{pageName}" em desenvolvimento
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export default function App() {
   const [userRole, setUserRole] = useState<UserRole>(null);
-  const [currentPage, setCurrentPage] = useState<Page>("landing");
-  const [coursePlayerData, setCoursePlayerData] = useState<any>(null);
+  const navigate = useNavigate();
 
   const handleLogin = (role: UserRole) => {
     setUserRole(role);
-    setCurrentPage("dashboard");
+    navigate("/dashboard");
   };
 
   const handleLogout = () => {
     setUserRole(null);
-    setCurrentPage("landing");
+    navigate("/");
   };
 
-  const handleNavigate = (page: string, data?: any) => {
-    if (page === "course-player") {
-      setCoursePlayerData(data);
-    }
-    setCurrentPage(page as Page);
-  };
-
-  // Landing Page
-  if (currentPage === "landing") {
-    return (
-      <div className="min-h-screen">
-        <Navbar onLoginClick={() => setCurrentPage("login")} onNavigate={handleNavigate} />
-        <main>
-          <CoursesCarousel />
-          <EventsCarousel />
-          <About />
-          <Contact />
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  // Login Page
-  if (currentPage === "login") {
-    return (
-      <div className="min-h-screen">
-        <Navbar onLoginClick={() => setCurrentPage("login")} onNavigate={handleNavigate} />
-        <Login onLogin={handleLogin} />
-      </div>
-    );
-  }
-
-  // Course Player (full screen, no sidebar)
-  if (currentPage === "course-player" && userRole === "student") {
-    return (
-      <div className="min-h-screen">
-        <Navbar onLoginClick={() => setCurrentPage("login")} onNavigate={handleNavigate} />
-        <CoursePlayer
-          courseId={coursePlayerData?.courseId || 1}
-          onBack={() => setCurrentPage("dashboard")}
-        />
-      </div>
-    );
-  }
-
-  // Authenticated Pages with Sidebar
   return (
-    <div className="min-h-screen">
-      <Navbar onLoginClick={() => setCurrentPage("login")} onNavigate={handleNavigate} />
-      <div className="flex min-h-screen bg-gray-50">
-        <Sidebar
-          role={userRole!}
-          currentPage={currentPage}
-          onNavigate={handleNavigate}
-          onLogout={handleLogout}
-        />
-        <main className="flex-1">
-          {/* Student Pages */}
-          {userRole === "student" && currentPage === "dashboard" && (
-            <StudentDashboard onNavigate={handleNavigate} />
-          )}
-          
-          {/* Teacher Pages */}
-          {userRole === "teacher" && currentPage === "dashboard" && (
-            <TeacherDashboard onNavigate={handleNavigate} />
-          )}
-          
-          {/* Admin Pages */}
-          {userRole === "admin" && currentPage === "dashboard" && (
-            <AdminDashboard onNavigate={handleNavigate} />
-          )}
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<Login onLogin={handleLogin} onBack={() => navigate("/")} />} />
 
-          {/* Placeholder for other pages */}
-          {!["dashboard", "course-player"].includes(currentPage) && (
-            <div className="p-6">
-              <div className="bg-white rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
-                <p className="text-gray-500">
-                  Página "{currentPage}" em desenvolvimento
-                </p>
-              </div>
-            </div>
-          )}
-        </main>
-      </div>
-    </div>
+      <Route path="/course-player/:courseId" element={
+        userRole === "student" ? <CoursePlayer onBack={() => navigate("/dashboard")} /> : <Navigate to="/login" />
+      } />
+
+      <Route path="/dashboard" element={<ProtectedLayout role={userRole} onLogout={handleLogout} />}>
+        <Route index element={
+          <>
+            {userRole === "student" && <StudentDashboard />}
+            {userRole === "teacher" && <TeacherDashboard />}
+            {userRole === "admin" && <AdminDashboard />}
+          </>
+        } />
+        <Route path="*" element={<PlaceholderPage />} />
+      </Route>
+    </Routes>
   );
 }

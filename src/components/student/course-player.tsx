@@ -1,229 +1,187 @@
 import { useState } from "react";
-import { Card } from "../ui/card";
-import { Button } from "../ui/button";
-import { Progress } from "../ui/progress";
+import { useParams } from "react-router-dom";
 import { ArrowLeft, CheckCircle, Circle, Lock, PlayCircle } from "lucide-react";
 
 interface CoursePlayerProps {
-  courseId: number;
-  onBack: () => void;
+    courseId?: number;
+    onBack: () => void;
 }
 
-export function CoursePlayer({ courseId, onBack }: CoursePlayerProps) {
-  const [currentLesson, setCurrentLesson] = useState(0);
+export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerProps) {
+    const { courseId: paramCourseId } = useParams();
+    const courseId = propCourseId || Number(paramCourseId) || 1;
+    const [currentLesson, setCurrentLesson] = useState(0);
 
-  const course = {
-    id: courseId,
-    title: "Gestão Financeira para Empreendedoras",
-    instructor: "Profa. Ana Paula Silva",
-    progress: 60,
-    lessons: [
-      { id: 1, title: "Introdução à Gestão Financeira", duration: "12:30", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-      { id: 2, title: "Controle de Fluxo de Caixa", duration: "18:45", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-      { id: 3, title: "Planejamento Financeiro Pessoal", duration: "15:20", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-      { id: 4, title: "Separação de Finanças Pessoais e Empresariais", duration: "20:10", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-      { id: 5, title: "Custos Fixos e Variáveis", duration: "16:30", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-      { id: 6, title: "Formação de Preço", duration: "22:15", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-      { id: 7, title: "Margem de Lucro", duration: "14:50", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-      { id: 8, title: "Controle de Estoque", duration: "19:30", completed: false, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-      { id: 9, title: "Gestão de Contas a Pagar e Receber", duration: "17:40", completed: false, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-      { id: 10, title: "Indicadores Financeiros", duration: "21:00", completed: false, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-      { id: 11, title: "Planejamento Tributário Básico", duration: "25:20", completed: false, locked: true, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-      { id: 12, title: "Projeto Final - Plano Financeiro", duration: "30:00", completed: false, locked: true, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
-    ]
-  };
+    const course = {
+        id: courseId,
+        title: "Gestão Financeira para Empreendedoras",
+        instructor: "Profa. Ana Paula Silva",
+        progress: 60,
+        lessons: [
+            { id: 1, title: "Introdução à Gestão Financeira", duration: "12:30", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+            { id: 2, title: "Controle de Fluxo de Caixa", duration: "18:45", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+            { id: 3, title: "Planejamento Financeiro Pessoal", duration: "15:20", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+            { id: 4, title: "Separação de Finanças Pessoais e Empresariais", duration: "20:10", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+            { id: 5, title: "Custos Fixos e Variáveis", duration: "16:30", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+            { id: 6, title: "Formação de Preço", duration: "22:15", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+            { id: 7, title: "Margem de Lucro", duration: "14:50", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+            { id: 8, title: "Controle de Estoque", duration: "19:30", completed: false, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+            { id: 9, title: "Gestão de Contas a Pagar e Receber", duration: "17:40", completed: false, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+            { id: 10, title: "Indicadores Financeiros", duration: "21:00", completed: false, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+            { id: 11, title: "Planejamento Tributário Básico", duration: "25:20", completed: false, locked: true, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+            { id: 12, title: "Projeto Final - Plano Financeiro", duration: "30:00", completed: false, locked: true, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+        ]
+    };
 
-  const handleCompleteLesson = () => {
-    // Marcar aula como concluída
-    if (currentLesson < course.lessons.length - 1) {
-      setCurrentLesson(currentLesson + 1);
-    }
-  };
+    const handleCompleteLesson = () => {
+        // Marcar aula como concluída
+        if (currentLesson < course.lessons.length - 1) {
+            setCurrentLesson(currentLesson + 1);
+        }
+    };
 
-  const completedCount = course.lessons.filter(l => l.completed).length;
+    const completedCount = course.lessons.filter(l => l.completed).length;
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center gap-2 sm:gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onBack}
-              className="text-gray-600 hover:text-gray-900 flex-shrink-0"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div className="flex-1 min-w-0">
-              <h1 className="text-sm sm:text-base md:text-lg text-gray-900 truncate">{course.title}</h1>
-              <p className="text-xs sm:text-sm text-gray-600 truncate">{course.instructor}</p>
-            </div>
-            <div className="hidden sm:block text-right flex-shrink-0">
-              <p className="text-xs md:text-sm text-gray-600">{completedCount} de {course.lessons.length} aulas</p>
-              <Progress value={(completedCount / course.lessons.length) * 100} className="h-2 w-32 md:w-48 mt-2" />
-            </div>
-          </div>
-          {/* Progress bar for mobile */}
-          <div className="sm:hidden mt-3">
-            <p className="text-xs text-gray-600 mb-1">{completedCount} de {course.lessons.length} aulas concluídas</p>
-            <Progress value={(completedCount / course.lessons.length) * 100} className="h-2" />
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col lg:flex-row max-w-7xl mx-auto">
-        {/* Video Player */}
-        <div className="flex-1 p-4 sm:p-6">
-          <div className="space-y-4">
-            <Card className="overflow-hidden">
-              <div className="aspect-video bg-black relative">
-                <iframe
-                  src={course.lessons[currentLesson].videoUrl}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              </div>
-            </Card>
-
-            <Card className="p-4 sm:p-6">
-              <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4">
-                <div className="flex-1">
-                  <h2 className="text-base sm:text-lg text-gray-900 mb-2">
-                    Aula {currentLesson + 1}: {course.lessons[currentLesson].title}
-                  </h2>
-                  <p className="text-sm text-gray-600">Duração: {course.lessons[currentLesson].duration}</p>
-                </div>
-                {!course.lessons[currentLesson].completed && (
-                  <Button
-                    onClick={handleCompleteLesson}
-                    className="bg-[#9acd32] hover:bg-[#8ab82a] text-gray-900 w-full sm:w-auto"
-                  >
-                    <CheckCircle className="h-5 w-5 mr-2" />
-                    Marcar como Concluída
-                  </Button>
-                )}
-              </div>
-
-              <div className="prose max-w-none">
-                <p className="text-sm sm:text-base text-gray-700">
-                  Nesta aula você aprenderá conceitos essenciais sobre {course.lessons[currentLesson].title.toLowerCase()}. 
-                  Assista com atenção e faça anotações dos pontos principais.
-                </p>
-              </div>
-            </Card>
-
-            {/* Navigation Buttons */}
-            <div className="flex gap-2 sm:gap-4">
-              <Button
-                variant="outline"
-                onClick={() => setCurrentLesson(Math.max(0, currentLesson - 1))}
-                disabled={currentLesson === 0}
-                className="flex-1 text-sm sm:text-base"
-              >
-                <span className="hidden sm:inline">Aula Anterior</span>
-                <span className="sm:hidden">Anterior</span>
-              </Button>
-              <Button
-                onClick={() => setCurrentLesson(Math.min(course.lessons.length - 1, currentLesson + 1))}
-                disabled={currentLesson === course.lessons.length - 1}
-                className="flex-1 bg-[#6a2e99] hover:bg-[#8e44ad] text-sm sm:text-base"
-              >
-                <span className="hidden sm:inline">Próxima Aula</span>
-                <span className="sm:hidden">Próxima</span>
-              </Button>
-            </div>
-
-            {/* Lessons List for Mobile */}
-            <div className="lg:hidden">
-              <Card className="p-4">
-                <h3 className="text-base font-semibold text-gray-900 mb-3">Conteúdo do Curso</h3>
-                <div className="space-y-2 max-h-96 overflow-y-auto">
-                  {course.lessons.map((lesson, index) => (
-                    <button
-                      key={lesson.id}
-                      onClick={() => !lesson.locked && setCurrentLesson(index)}
-                      disabled={lesson.locked}
-                      className={`w-full text-left p-3 rounded-lg transition-colors ${
-                        currentLesson === index
-                          ? "bg-[#6a2e99] text-white"
-                          : lesson.locked
-                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                          : "hover:bg-purple-50 text-gray-700"
-                      }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0">
-                          {lesson.locked ? (
-                            <Lock className="h-4 w-4" />
-                          ) : lesson.completed ? (
-                            <CheckCircle className={`h-4 w-4 ${currentLesson === index ? "text-white" : "text-green-600"}`} />
-                          ) : (
-                            <Circle className="h-4 w-4" />
-                          )}
+    return (
+        <div className="min-vh-100 bg-light">
+            {/* Header */}
+            <div className="bg-white border-bottom sticky-top" style={{ zIndex: 1020 }}>
+                <div className="container-fluid px-4 py-3">
+                    <div className="d-flex align-items-center gap-3">
+                        <button
+                            onClick={onBack}
+                            className="btn btn-link text-secondary p-0"
+                        >
+                            <ArrowLeft size={20} />
+                        </button>
+                        <div className="flex-grow-1">
+                            <h1 className="h5 mb-0 text-dark">{course.title}</h1>
+                            <p className="small text-muted mb-0">{course.instructor}</p>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-sm line-clamp-2 mb-1 ${currentLesson === index ? "text-white" : ""}`}>
-                            {index + 1}. {lesson.title}
-                          </p>
-                          <p className={`text-xs ${currentLesson === index ? "text-purple-200" : "text-gray-500"}`}>
-                            {lesson.duration}
-                          </p>
+                        <div className="text-end d-none d-md-block">
+                            <p className="small text-muted mb-1">{completedCount} de {course.lessons.length} aulas concluídas</p>
+                            <div className="progress" style={{ height: '8px', width: '200px' }}>
+                                <div
+                                    className="progress-bar"
+                                    role="progressbar"
+                                    style={{ width: `${(completedCount / course.lessons.length) * 100}%` }}
+                                    aria-valuenow={(completedCount / course.lessons.length) * 100}
+                                    aria-valuemin={0}
+                                    aria-valuemax={100}
+                                />
+                            </div>
                         </div>
-                        {currentLesson === index && <PlayCircle className="h-5 w-5 flex-shrink-0" />}
-                      </div>
-                    </button>
-                  ))}
+                    </div>
                 </div>
-              </Card>
             </div>
-          </div>
-        </div>
 
-        {/* Lessons Sidebar - Desktop Only */}
-        <div className="hidden lg:block w-96 border-l bg-white p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Conteúdo do Curso</h3>
-          <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
-            {course.lessons.map((lesson, index) => (
-              <button
-                key={lesson.id}
-                onClick={() => !lesson.locked && setCurrentLesson(index)}
-                disabled={lesson.locked}
-                className={`w-full text-left p-3 rounded-lg transition-colors ${
-                  currentLesson === index
-                    ? "bg-[#6a2e99] text-white"
-                    : lesson.locked
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "hover:bg-purple-50 text-gray-700"
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  <div className="mt-1">
-                    {lesson.locked ? (
-                      <Lock className="h-4 w-4" />
-                    ) : lesson.completed ? (
-                      <CheckCircle className={`h-4 w-4 ${currentLesson === index ? "text-white" : "text-green-600"}`} />
-                    ) : (
-                      <Circle className="h-4 w-4" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className={`line-clamp-2 mb-1 ${currentLesson === index ? "text-white" : ""}`}>
-                      {index + 1}. {lesson.title}
-                    </p>
-                    <p className={`text-xs ${currentLesson === index ? "text-purple-200" : "text-gray-500"}`}>
-                      {lesson.duration}
-                    </p>
-                  </div>
-                  {currentLesson === index && <PlayCircle className="h-5 w-5 flex-shrink-0" />}
+            <div className="container-fluid px-4 py-4">
+                <div className="row g-4">
+                    {/* Video Player */}
+                    <div className="col-12 col-lg-8">
+                        <div className="d-flex flex-column gap-4">
+                            <div className="card overflow-hidden border-0 shadow-sm">
+                                <div className="ratio ratio-16x9 bg-black">
+                                    <iframe
+                                        src={course.lessons[currentLesson].videoUrl}
+                                        title={course.lessons[currentLesson].title}
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                    ></iframe>
+                                </div>
+                            </div>
+
+                            <div className="card border-0 shadow-sm p-4">
+                                <div className="d-flex flex-column flex-md-row align-items-md-start justify-content-between gap-3 mb-4">
+                                    <div>
+                                        <h2 className="h4 text-dark mb-2">
+                                            Aula {currentLesson + 1}: {course.lessons[currentLesson].title}
+                                        </h2>
+                                        <p className="text-muted mb-0">Duração: {course.lessons[currentLesson].duration}</p>
+                                    </div>
+                                    {!course.lessons[currentLesson].completed && (
+                                        <button
+                                            onClick={handleCompleteLesson}
+                                            className="btn btn-success text-dark d-flex align-items-center gap-2"
+                                        >
+                                            <CheckCircle size={20} />
+                                            Marcar como Concluída
+                                        </button>
+                                    )}
+                                </div>
+
+                                <div className="text-secondary">
+                                    <p>
+                                        Nesta aula você aprenderá conceitos essenciais sobre {course.lessons[currentLesson].title.toLowerCase()}.
+                                        Assista com atenção e faça anotações dos pontos principais.
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Navigation Buttons */}
+                            <div className="d-flex gap-3">
+                                <button
+                                    onClick={() => setCurrentLesson(Math.max(0, currentLesson - 1))}
+                                    disabled={currentLesson === 0}
+                                    className="btn btn-outline-secondary flex-fill"
+                                >
+                                    Aula Anterior
+                                </button>
+                                <button
+                                    onClick={() => setCurrentLesson(Math.min(course.lessons.length - 1, currentLesson + 1))}
+                                    disabled={currentLesson === course.lessons.length - 1}
+                                    className="btn btn-primary flex-fill"
+                                >
+                                    Próxima Aula
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Lessons Sidebar */}
+                    <div className="col-12 col-lg-4">
+                        <div className="card border-0 shadow-sm h-100">
+                            <div className="card-header bg-white border-bottom p-4">
+                                <h3 className="h5 mb-0 text-dark">Conteúdo do Curso</h3>
+                            </div>
+                            <div className="card-body p-0 lesson-list">
+                                <div className="list-group list-group-flush">
+                                    {course.lessons.map((lesson, index) => (
+                                        <button
+                                            key={lesson.id}
+                                            onClick={() => !lesson.locked && setCurrentLesson(index)}
+                                            disabled={lesson.locked}
+                                            className={`list-group-item list-group-item-action p-3 border-0 ${currentLesson === index ? "active bg-primary-purple text-white" : ""
+                                                } ${lesson.locked ? "bg-light text-muted" : ""}`}
+                                        >
+                                            <div className="d-flex align-items-start gap-3">
+                                                <div className="mt-1">
+                                                    {lesson.locked ? (
+                                                        <Lock size={16} />
+                                                    ) : lesson.completed ? (
+                                                        <CheckCircle size={16} className={currentLesson === index ? "text-white" : "text-success"} />
+                                                    ) : (
+                                                        <Circle size={16} />
+                                                    )}
+                                                </div>
+                                                <div className="flex-grow-1">
+                                                    <p className="mb-1 fw-medium line-clamp-2">
+                                                        {index + 1}. {lesson.title}
+                                                    </p>
+                                                    <p className={`small mb-0 ${currentLesson === index ? "text-white-50" : "text-muted"}`}>
+                                                        {lesson.duration}
+                                                    </p>
+                                                </div>
+                                                {currentLesson === index && <PlayCircle size={20} className="flex-shrink-0" />}
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </button>
-            ))}
-          </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
