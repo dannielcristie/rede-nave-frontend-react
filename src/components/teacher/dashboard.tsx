@@ -1,167 +1,175 @@
-import { Card } from "../ui/card";
-import { Button } from "../ui/button";
+import { Link } from "react-router-dom";
 import { Users, BookOpen, TrendingUp, Award, Eye } from "lucide-react";
 
-interface TeacherDashboardProps {
-  onNavigate: (page: string) => void;
-}
+export function TeacherDashboard() {
+    const classes = [
+        {
+            id: 1,
+            name: "Gestão Financeira - Turma A",
+            students: 45,
+            progress: 65,
+            activeStudents: 38
+        },
+        {
+            id: 2,
+            name: "Marketing Digital - Turma B",
+            students: 52,
+            progress: 42,
+            activeStudents: 48
+        }
+    ];
 
-export function TeacherDashboard({ onNavigate }: TeacherDashboardProps) {
-  const classes = [
-    {
-      id: 1,
-      name: "Gestão Financeira - Turma A",
-      students: 45,
-      progress: 65,
-      activeStudents: 38
-    },
-    {
-      id: 2,
-      name: "Marketing Digital - Turma B",
-      students: 52,
-      progress: 42,
-      activeStudents: 48
-    }
-  ];
+    const recentActivity = [
+        { student: "Maria Silva", action: "Completou o curso", course: "Gestão Financeira", time: "2h atrás" },
+        { student: "Ana Costa", action: "Enviou atividade", course: "Marketing Digital", time: "5h atrás" },
+        { student: "Juliana Santos", action: "Iniciou módulo 3", course: "Gestão Financeira", time: "1 dia atrás" }
+    ];
 
-  const recentActivity = [
-    { student: "Maria Silva", action: "Completou o curso", course: "Gestão Financeira", time: "2h atrás" },
-    { student: "Ana Costa", action: "Enviou atividade", course: "Marketing Digital", time: "5h atrás" },
-    { student: "Juliana Santos", action: "Iniciou módulo 3", course: "Gestão Financeira", time: "1 dia atrás" }
-  ];
-
-  return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-gray-900 mb-2">Painel da Professora</h1>
-        <p className="text-gray-600">Acompanhe o progresso das suas turmas</p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid md:grid-cols-4 gap-4">
-        <Card className="p-6">
-          <div className="flex items-center gap-4">
-            <div className="bg-purple-100 text-[#6a2e99] h-12 w-12 rounded-lg flex items-center justify-center">
-              <Users className="h-6 w-6" />
+    return (
+        <div className="p-3 p-md-4">
+            {/* Header */}
+            <div className="mb-4">
+                <h1 className="h3 mb-2">Painel da Professora</h1>
+                <p className="text-muted">Acompanhe o progresso das suas turmas</p>
             </div>
+
+            {/* Stats Cards */}
+            <div className="row g-3 g-md-4 mb-4">
+                <div className="col-12 col-sm-6 col-lg-3">
+                    <div className="card stat-card h-100">
+                        <div className="card-body d-flex align-items-center gap-3">
+                            <div className="icon-badge bg-primary bg-opacity-10 text-primary-purple">
+                                <Users size={24} />
+                            </div>
+                            <div>
+                                <p className="text-muted mb-1 small">Total de Alunas</p>
+                                <h3 className="h4 mb-0">97</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-12 col-sm-6 col-lg-3">
+                    <div className="card stat-card h-100">
+                        <div className="card-body d-flex align-items-center gap-3">
+                            <div className="icon-badge bg-success bg-opacity-10 text-success">
+                                <TrendingUp size={24} />
+                            </div>
+                            <div>
+                                <p className="text-muted mb-1 small">Alunas Ativas</p>
+                                <h3 className="h4 mb-0">86</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-12 col-sm-6 col-lg-3">
+                    <div className="card stat-card h-100">
+                        <div className="card-body d-flex align-items-center gap-3">
+                            <div className="icon-badge bg-info bg-opacity-10 text-info">
+                                <BookOpen size={24} />
+                            </div>
+                            <div>
+                                <p className="text-muted mb-1 small">Turmas Ativas</p>
+                                <h3 className="h4 mb-0">2</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-12 col-sm-6 col-lg-3">
+                    <div className="card stat-card h-100">
+                        <div className="card-body d-flex align-items-center gap-3">
+                            <div className="icon-badge bg-warning bg-opacity-10 text-warning">
+                                <Award size={24} />
+                            </div>
+                            <div>
+                                <p className="text-muted mb-1 small">Certificadas</p>
+                                <h3 className="h4 mb-0">34</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Classes */}
+            <div className="mb-5">
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                    <h2 className="h4 mb-0">Minhas Turmas</h2>
+                    <Link
+                        to="/dashboard/classes"
+                        className="btn btn-link text-decoration-none text-primary-purple p-0"
+                    >
+                        Ver todas
+                    </Link>
+                </div>
+
+                <div className="row g-3 g-md-4">
+                    {classes.map((cls) => (
+                        <div key={cls.id} className="col-12 col-md-6">
+                            <div className="card h-100">
+                                <div className="card-body">
+                                    <div className="mb-3">
+                                        <h3 className="h6 mb-2">{cls.name}</h3>
+                                        <div className="d-flex gap-2 text-muted small">
+                                            <span>{cls.students} alunas</span>
+                                            <span>•</span>
+                                            <span>{cls.activeStudents} ativas</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <div className="d-flex justify-content-between text-muted small mb-2">
+                                            <span>Progresso Médio</span>
+                                            <span>{cls.progress}%</span>
+                                        </div>
+                                        <div className="progress" style={{ height: '6px' }}>
+                                            <div
+                                                className="progress-bar"
+                                                role="progressbar"
+                                                style={{ width: `${cls.progress}%` }}
+                                                aria-valuenow={cls.progress}
+                                                aria-valuemin={0}
+                                                aria-valuemax={100}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <Link
+                                        to="/dashboard/classes"
+                                        className="btn btn-primary w-100 d-flex align-items-center justify-content-center"
+                                    >
+                                        <Eye size={16} className="me-2" />
+                                        Ver Detalhes
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Recent Activity */}
             <div>
-              <p className="text-gray-600">Total de Alunas</p>
-              <p className="text-gray-900">97</p>
+                <h2 className="h4 mb-3">Atividade Recente</h2>
+                <div className="card">
+                    <div className="list-group list-group-flush">
+                        {recentActivity.map((activity, index) => (
+                            <div key={index} className="list-group-item">
+                                <div className="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <p className="mb-1">
+                                            <strong>{activity.student}</strong> {activity.action}
+                                        </p>
+                                        <p className="text-muted mb-0 small">{activity.course}</p>
+                                    </div>
+                                    <span className="text-muted small">{activity.time}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center gap-4">
-            <div className="bg-green-100 text-green-600 h-12 w-12 rounded-lg flex items-center justify-center">
-              <TrendingUp className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-gray-600">Alunas Ativas</p>
-              <p className="text-gray-900">86</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center gap-4">
-            <div className="bg-blue-100 text-blue-600 h-12 w-12 rounded-lg flex items-center justify-center">
-              <BookOpen className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-gray-600">Turmas Ativas</p>
-              <p className="text-gray-900">2</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center gap-4">
-            <div className="bg-orange-100 text-orange-600 h-12 w-12 rounded-lg flex items-center justify-center">
-              <Award className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-gray-600">Certificadas</p>
-              <p className="text-gray-900">34</p>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      {/* Classes */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-gray-900">Minhas Turmas</h2>
-          <Button
-            variant="ghost"
-            onClick={() => onNavigate("classes")}
-            className="text-[#6a2e99] hover:text-[#8e44ad]"
-          >
-            Ver todas
-          </Button>
         </div>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          {classes.map((cls) => (
-            <Card key={cls.id} className="p-6">
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-gray-900 mb-2">{cls.name}</h3>
-                  <div className="flex gap-4 text-gray-600">
-                    <span>{cls.students} alunas</span>
-                    <span>•</span>
-                    <span>{cls.activeStudents} ativas</span>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-gray-600 mb-2">
-                    <span>Progresso Médio</span>
-                    <span>{cls.progress}%</span>
-                  </div>
-                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-[#6a2e99] transition-all"
-                      style={{ width: `${cls.progress}%` }}
-                    ></div>
-                  </div>
-                </div>
-
-                <Button
-                  className="w-full bg-[#6a2e99] hover:bg-[#8e44ad]"
-                  onClick={() => onNavigate("classes")}
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  Ver Detalhes
-                </Button>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </div>
-
-      {/* Recent Activity */}
-      <div>
-        <h2 className="text-gray-900 mb-4">Atividade Recente</h2>
-        <Card>
-          <div className="divide-y">
-            {recentActivity.map((activity, index) => (
-              <div key={index} className="p-4 hover:bg-gray-50 transition-colors">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-900">
-                      <strong>{activity.student}</strong> {activity.action}
-                    </p>
-                    <p className="text-gray-600">{activity.course}</p>
-                  </div>
-                  <p className="text-gray-500">{activity.time}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      </div>
-    </div>
-  );
+    );
 }
