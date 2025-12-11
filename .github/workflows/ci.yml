@@ -1,0 +1,37 @@
+name: CI (Lint & Build)
+
+# Define quando essa action vai rodar
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-lint:
+    # O sistema operacional onde a máquina virtual vai rodar
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Baixa o código do repositório para a máquina virtual
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      # 2. Instala o Node.js na versão correta
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm' # Habilita cache para instalar dependências mais rápido
+
+      # 3. Instala as dependências do projeto de forma limpa (igual ao package-lock.json)
+      - name: Instalar dependências
+        run: npm ci
+
+      # 4. Roda o comando de Lint para verificar erros de código/estilo
+      - name: Verificar código (Lint)
+        run: npm run lint
+
+      # 5. Tenta fazer o Build para garantir que o projeto compila
+      - name: Build do projeto
+        run: npm run build
