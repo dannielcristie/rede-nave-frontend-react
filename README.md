@@ -40,3 +40,8 @@ Link para o quadro de tarefas e issues do projeto no GitHub.
 - [Acompanhar Tarefas (Issues)](https://github.com/dannielcristie/rede-nave-frontend-react/issues)
 - [Quadro Kanban](https://github.com/users/dannielcristie/projects/3)
 
+# Contribuição
+
+Veja nosso guia de padrões para commits e branches:
+- [Guia de Contribuição](CONTRIBUTING.md)
+
