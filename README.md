@@ -42,6 +42,7 @@
 Link para o Figma.
 
 - [Figma Link](https://www.figma.com/make/OklaMDG7BoiAJbwmUCSXUJ/Landing-Page-para-Plataforma-de-Curso?node-id=0-1&t=eLY4Jdu0ETNJGxIn-1)
+- [Baixar Arquivos do Figma (.zip)](project.zip)
 
 # Backlog
 
