@@ -73,7 +73,7 @@ export function CoursesCarousel() {
     ];
 
     return (
-        <section id="cursos" className="py-5 bg-white content-with-navbar">
+        <section id="cursos" className="py-5 bg-white content-with-navbar mt-5">
             <div className="container">
                 <div className="text-center mb-5">
                     <h2 className="h2 mb-3">Trilhas de Capacitação</h2>
@@ -135,7 +135,7 @@ export function CoursesCarousel() {
 
                                     <div className="card-footer bg-white d-flex justify-content-between align-items-center">
                                         <span className="text-primary-purple">{course.price}</span>
-                                        <button className="btn btn-primary btn-sm">
+                                        <button className="btn btn-sm" style={{ backgroundColor: '#6a2e99', color: 'white' }}>
                                             Inscrever-se
                                         </button>
                                     </div>

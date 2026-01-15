@@ -138,7 +138,7 @@ export function EventsCarousel() {
 
                                     <div className="card-footer bg-white d-flex justify-content-between align-items-center">
                                         <span className="text-accent-purple">{event.price}</span>
-                                        <button className="btn btn-secondary btn-sm">
+                                        <button className="btn btn-sm" style={{ backgroundColor: '#6a2e99', color: 'white' }}>
                                             Inscrever-se
                                         </button>
                                     </div>

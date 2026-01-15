@@ -25,7 +25,7 @@ export function Navbar() {
     };
 
     return (
-        <nav className="navbar navbar-expand-md navbar-light fixed-top-navbar navbar-custom border-bottom">
+        <nav className="navbar navbar-expand-md navbar-light fixed-top-navbar navbar-custom border-bottom pb-3">
             <div className="container-fluid px-3 px-lg-5">
                 {/* Logo */}
                 <Link className="navbar-brand fw-bold text-primary-purple" to="/">
