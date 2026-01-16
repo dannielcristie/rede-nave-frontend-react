@@ -100,8 +100,8 @@ export function CoursesCarousel() {
                         className="pb-5"
                     >
                         {courses.map((course, index) => (
-                            <SwiperSlide key={index}>
-                                <div className="card h-100 card-hover">
+                            <SwiperSlide key={index} style={{ height: 'auto' }}>
+                                <div className="card h-100 card-hover" style={{ display: 'flex', flexDirection: 'column' }}>
                                     <div className="position-relative" style={{ height: '200px', overflow: 'hidden' }}>
                                         <ImageWithFallback
                                             src={course.image}
@@ -113,7 +113,7 @@ export function CoursesCarousel() {
                                         </span>
                                     </div>
 
-                                    <div className="card-body">
+                                    <div className="card-body" style={{ flex: 1 }}>
                                         <h3 className="h6 mb-2">{course.title}</h3>
                                         <span className="badge bg-light text-dark border mb-3">{course.level}</span>
 

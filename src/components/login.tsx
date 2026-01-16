@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { ImageWithFallback } from "./ui/ImageWithFallback";
 import { ForgotPasswordModal } from "./forgot-password-modal";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { Navbar } from "./navbar";
+import { Footer } from "./footer";
 
 interface LoginProps {
     onLogin?: (role: "student" | "teacher" | "admin") => void;
@@ -21,6 +23,8 @@ export function Login({ onLogin, onBack }: LoginProps) {
     const [loginEmail, setLoginEmail] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
     const [error, setError] = useState('');
+    const [showLoginPassword, setShowLoginPassword] = useState(false);
+    const [showRegisterPassword, setShowRegisterPassword] = useState(false);
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -52,29 +56,33 @@ export function Login({ onLogin, onBack }: LoginProps) {
     };
 
     return (
-        <div className="min-vh-100 position-relative d-flex flex-column p-3 p-md-4">
-            {/* Background Image */}
-            <div className="position-fixed top-0 start-0 end-0 bottom-0" style={{ zIndex: 0 }}>
-                <ImageWithFallback
-                    src="https://images.unsplash.com/photo-1646295404846-658322e343e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21lbiUyMGVtcG93ZXJtZW50JTIwYnVzaW5lc3N8ZW58MXx8fHwxNzYzMzk0MzE0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-                    alt="Background"
-                    className="w-100 h-100 img-cover"
-                />
-                <div className="position-absolute top-0 start-0 end-0 bottom-0 gradient-overlay-purple"></div>
-            </div>
+        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <Navbar />
+            
+            <div style={{ flex: '1', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+                {/* Background Image */}
+                <div className="position-fixed top-0 start-0 end-0 bottom-0" style={{ zIndex: 0 }}>
+                    <ImageWithFallback
+                        src="https://images.unsplash.com/photo-1646295404846-658322e343e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21lbiUyMGVtcG93ZXJtZW50JTIwYnVzaW5lc3N8ZW58MXx8fHwxNzYzMzk0MzE0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+                        alt="Background"
+                        className="w-100 h-100 img-cover"
+                    />
+                    <div className="position-absolute top-0 start-0 end-0 bottom-0 gradient-overlay-purple"></div>
+                </div>
 
-            {/* Back Button */}
-            <button
-                onClick={onBack}
-                className="btn btn-light position-absolute top-0 start-0 m-3 d-flex align-items-center gap-2 shadow-sm"
-                style={{ zIndex: 20 }}
-            >
-                <ArrowLeft size={20} className="text-primary-purple" />
-                <span className="d-none d-sm-inline text-primary-purple fw-medium">Voltar para Início</span>
-            </button>
+                <div className="position-relative d-flex flex-column p-3 p-md-4" style={{ zIndex: 10, flex: '1', paddingTop: '2rem' }}>
+                    {/* Back Button */}
+                    <button
+                        onClick={onBack}
+                        className="btn btn-light d-flex align-items-center gap-2 shadow-sm" 
+                        style={{ zIndex: 20, width: 'fit-content', marginBottom: '2rem' }}
+                    >
+                        <ArrowLeft size={20} className="text-primary-purple" />
+                        <span className="d-none d-sm-inline text-primary-purple fw-medium">Voltar para Início</span>
+                    </button>
 
-            {/* Content */}
-            <div className="position-relative w-100 mx-auto py-5" style={{ maxWidth: '450px', zIndex: 10 }}>
+                    {/* Content */}
+                    <div className="w-100 mx-auto" style={{ maxWidth: '450px' }}>
                 <div className="card shadow-lg">
                     <div className="card-body p-4 p-md-5">
                         {/* Tabs */}
@@ -129,15 +137,38 @@ export function Login({ onLogin, onBack }: LoginProps) {
 
                                     <div className="mb-3">
                                         <label htmlFor="password" className="form-label">Senha</label>
-                                        <input
-                                            id="password"
-                                            type="password"
-                                            className="form-control"
-                                            placeholder="••••••••"
-                                            value={loginPassword}
-                                            onChange={(e) => setLoginPassword(e.target.value)}
-                                            required
-                                        />
+                                        <div style={{ position: 'relative' }}>
+                                            <input
+                                                id="password"
+                                                type={showLoginPassword ? "text" : "password"}
+                                                className="form-control"
+                                                placeholder="••••••••"
+                                                value={loginPassword}
+                                                onChange={(e) => setLoginPassword(e.target.value)}
+                                                style={{ paddingRight: '40px' }}
+                                                required
+                                            />
+                                            <button
+                                                type="button"
+                                                style={{
+                                                    position: 'absolute',
+                                                    right: '10px',
+                                                    top: '50%',
+                                                    transform: 'translateY(-50%)',
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    color: '#6c757d',
+                                                    cursor: 'pointer',
+                                                    padding: '0',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center'
+                                                }}
+                                                onClick={() => setShowLoginPassword(!showLoginPassword)}
+                                            >
+                                                {showLoginPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <div className="text-end mb-3">
@@ -221,17 +252,85 @@ export function Login({ onLogin, onBack }: LoginProps) {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label htmlFor="register-password" className="form-label">Senha</label>
+                                        <label htmlFor="register-cpf" className="form-label">CPF</label>
                                         <input
-                                            id="register-password"
-                                            type="password"
+                                            id="register-cpf"
+                                            type="text"
                                             className="form-control"
-                                            placeholder="••••••••"
+                                            placeholder="000.000.000-00"
                                             required
                                         />
                                     </div>
 
-                                    <button type="submit" className="btn btn-success w-100 mb-3">
+                                    <div className="mb-3">
+                                        <label htmlFor="register-password" className="form-label">Senha</label>
+                                        <div style={{ position: 'relative' }}>
+                                            <input
+                                                id="register-password"
+                                                type={showRegisterPassword ? "text" : "password"}
+                                                className="form-control"
+                                                placeholder="••••••••"
+                                                style={{ paddingRight: '40px' }}
+                                                required
+                                            />
+                                            <button
+                                                type="button"
+                                                style={{
+                                                    position: 'absolute',
+                                                    right: '10px',
+                                                    top: '50%',
+                                                    transform: 'translateY(-50%)',
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    color: '#6c757d',
+                                                    cursor: 'pointer',
+                                                    padding: '0',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center'
+                                                }}
+                                                onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                                            >
+                                                {showRegisterPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <label htmlFor="register-confirm-password" className="form-label">Confirmar Senha</label>
+                                        <div style={{ position: 'relative' }}>
+                                            <input
+                                                id="register-confirm-password"
+                                                type={showRegisterPassword ? "text" : "password"}
+                                                className="form-control"
+                                                placeholder="••••••••"
+                                                style={{ paddingRight: '40px' }}
+                                                required
+                                            />
+                                            <button
+                                                type="button"
+                                                style={{
+                                                    position: 'absolute',
+                                                    right: '10px',
+                                                    top: '50%',
+                                                    transform: 'translateY(-50%)',
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    color: '#6c757d',
+                                                    cursor: 'pointer',
+                                                    padding: '0',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center'
+                                                }}
+                                                onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                                            >
+                                                {showRegisterPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" className="btn w-100 mb-3" style={{ backgroundColor: '#8E44AD', color: 'white', border: 'none' }}>
                                         Cadastrar
                                     </button>
 
@@ -252,12 +351,16 @@ export function Login({ onLogin, onBack }: LoginProps) {
                         </div>
                     </div>
                 </div>
+                    </div>
+                </div>
             </div>
 
             <ForgotPasswordModal
                 open={showForgotPassword}
                 onClose={() => setShowForgotPassword(false)}
             />
+            
+            <Footer/>
         </div>
     );
 }

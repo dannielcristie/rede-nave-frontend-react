@@ -28,7 +28,7 @@ export function About() {
     return (
         <section id="sobre" className="py-5 bg-white position-relative overflow-hidden">
             {/* Background Image */}
-            <div className="position-absolute top-0 start-0 end-0 bottom-0 opacity-10">
+            <div className="position-absolute top-0 start-0 end-0 bottom-0" style={{ opacity: 0.3 }}>
                 <ImageWithFallback
                     src="https://images.unsplash.com/photo-1758685848174-e061c6486651?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWFjaGluZyUyMGNsYXNzcm9vbSUyMG1vZGVybnxlbnwxfHx8fDE3NjMwNDM0NzR8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                     alt="Background"

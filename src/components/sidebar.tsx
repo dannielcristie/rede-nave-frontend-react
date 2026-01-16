@@ -62,7 +62,14 @@ export function Sidebar({ role, onLogout }: SidebarProps) {
             <aside className={`sidebar ${isMobileOpen ? 'show' : ''} d-flex flex-column`}>
                 {/* Logo */}
                 <div className="p-4 border-bottom">
-                    <h4 className="text-primary-purple fw-bold mb-0">Rede Nave</h4>
+                    <div className="d-flex align-items-center gap-2">
+                        <img 
+                            src="/public/logo.png" 
+                            alt="Rede Nave Logo" 
+                            style={{ height: '32px', width: 'auto' }}
+                        />
+                        <h4 className="text-primary-purple fw-bold mb-0">Rede Nave</h4>
+                    </div>
                 </div>
 
                 {/* Navigation */}

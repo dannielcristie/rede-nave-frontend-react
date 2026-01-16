@@ -9,9 +9,21 @@ import { Footer } from "./components/footer";
 import { Login } from "./components/login";
 import { Sidebar } from "./components/sidebar";
 import { StudentDashboard } from "./components/student/dashboard";
+import { StudentMyCourses } from "./components/student/my-courses";
+import { StudentEvents } from "./components/student/events";
+import { StudentCertificates } from "./components/student/certificates";
+import { StudentProfilePage } from "./components/profile-page";
 import { CoursePlayer } from "./components/student/course-player";
 import { TeacherDashboard } from "./components/teacher/dashboard";
+import { TeacherClasses } from "./components/teacher/classes";
+import { TeacherStudents } from "./components/teacher/studentes";
+import { TeacherReports } from "./components/teacher/reports";
 import { AdminDashboard } from "./components/admin/dashboard";
+import { AdminStats } from "./components/admin/stats";
+import { AdminUsers } from "./components/admin/users";
+import { AdminCourses } from "./components/admin/courses";
+import { AdminSettings } from "./components/admin/settings";
+import { AdminEventsAdmin } from "./components/admin/events-admin";
 
 type UserRole = "student" | "teacher" | "admin" | null;
 
@@ -87,6 +99,39 @@ export default function App() {
             {userRole === "teacher" && <TeacherDashboard />}
             {userRole === "admin" && <AdminDashboard />}
           </>
+        } />
+        <Route path="my-courses" element={
+          userRole === "student" ? <StudentMyCourses onNavigate={() => {}} /> : <PlaceholderPage />
+        } />
+        <Route path="events" element={
+          userRole === "student" ? <StudentEvents /> : userRole === "admin" ? <AdminEventsAdmin /> : <PlaceholderPage />
+        } />
+        <Route path="certificates" element={
+          userRole === "student" ? <StudentCertificates /> : <PlaceholderPage />
+        } />
+        <Route path="profile" element={
+          userRole ? <StudentProfilePage userRole={userRole} /> : <PlaceholderPage />
+        } />
+        <Route path="classes" element={
+          userRole === "teacher" ? <TeacherClasses /> : <PlaceholderPage />
+        } />
+        <Route path="students" element={
+          userRole === "teacher" ? <TeacherStudents /> : <PlaceholderPage />
+        } />
+        <Route path="reports" element={
+          userRole === "teacher" ? <TeacherReports /> : <PlaceholderPage />
+        } />
+        <Route path="stats" element={
+          userRole === "admin" ? <AdminStats /> : <PlaceholderPage />
+        } />
+        <Route path="users" element={
+          userRole === "admin" ? <AdminUsers /> : <PlaceholderPage />
+        } />
+        <Route path="courses" element={
+          userRole === "admin" ? <AdminCourses /> : <PlaceholderPage />
+        } />
+        <Route path="settings" element={
+          userRole === "admin" ? <AdminSettings /> : <PlaceholderPage />
         } />
         <Route path="*" element={<PlaceholderPage />} />
       </Route>

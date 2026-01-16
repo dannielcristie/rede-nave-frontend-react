@@ -100,20 +100,20 @@ export function EventsCarousel() {
                         className="pb-5"
                     >
                         {events.map((event, index) => (
-                            <SwiperSlide key={index}>
-                                <div className="card h-100 card-hover">
+                            <SwiperSlide key={index} style={{ height: 'auto' }}>
+                                <div className="card h-100 card-hover" style={{ display: 'flex', flexDirection: 'column' }}>
                                     <div className="position-relative" style={{ height: '200px', overflow: 'hidden' }}>
                                         <ImageWithFallback
                                             src={event.image}
                                             alt={event.title}
                                             className="img-cover"
                                         />
-                                        <span className="badge bg-secondary position-absolute top-0 start-0 m-3">
+                                        <span className="badge position-absolute top-0 start-0 m-3" style={{ backgroundColor: '#6a2e99', color: 'white' }}>
                                             {event.category}
                                         </span>
                                     </div>
 
-                                    <div className="card-body">
+                                    <div className="card-body" style={{ flex: 1 }}>
                                         <h3 className="h6 mb-3">{event.title}</h3>
 
                                         <div className="small text-muted">
