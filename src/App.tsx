@@ -101,7 +101,17 @@ export default function App() {
           </>
         } />
         <Route path="my-courses" element={
-          userRole === "student" ? <StudentMyCourses onNavigate={() => {}} /> : <PlaceholderPage />
+          userRole === "student" ? (
+            <StudentMyCourses 
+              onNavigate={(page, data) => {
+                if (page === "course-player" && data?.courseId) {
+                  navigate(`/course-player/${data.courseId}`);
+                }
+              }} 
+            /> 
+          ) : (
+            <PlaceholderPage />
+          )
         } />
         <Route path="events" element={
           userRole === "student" ? <StudentEvents /> : userRole === "admin" ? <AdminEventsAdmin /> : <PlaceholderPage />

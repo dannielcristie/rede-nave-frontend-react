@@ -14,14 +14,14 @@ export function AdminSettings() {
       <div className="row g-4">
         {/* General Settings */}
         <div className="col-lg-6">
-          <div className="card shadow-sm">
+          <div className="card shadow-sm h-100 d-flex flex-column">
             <div className="card-header bg-white py-3">
               <div className="d-flex align-items-center gap-2">
                 <Globe size={20} className="text-primary-purple" />
                 <h5 className="mb-0">Configurações Gerais</h5>
               </div>
             </div>
-            <div className="card-body">
+            <div className="card-body flex-grow-1">
               <form>
                 <div className="mb-3">
                   <label className="form-label">Nome da Plataforma</label>
@@ -47,7 +47,7 @@ export function AdminSettings() {
                     defaultValue="https://redenave.com.br"
                   />
                 </div>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary mt-auto">
                   <Save size={16} className="me-2" />
                   Salvar Alterações
                 </button>
@@ -58,14 +58,14 @@ export function AdminSettings() {
 
         {/* Email Settings */}
         <div className="col-lg-6">
-          <div className="card shadow-sm">
+          <div className="card shadow-sm h-100 d-flex flex-column">
             <div className="card-header bg-white py-3">
               <div className="d-flex align-items-center gap-2">
                 <Mail size={20} className="text-primary-purple" />
                 <h5 className="mb-0">Configurações de Email</h5>
               </div>
             </div>
-            <div className="card-body">
+            <div className="card-body flex-grow-1">
               <form>
                 <div className="mb-3">
                   <label className="form-label">Email de Remetente</label>
@@ -91,7 +91,7 @@ export function AdminSettings() {
                     defaultValue="smtp.gmail.com"
                   />
                 </div>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary mt-auto">
                   <Save size={16} className="me-2" />
                   Salvar Alterações
                 </button>
@@ -102,14 +102,14 @@ export function AdminSettings() {
 
         {/* Notification Settings */}
         <div className="col-lg-6">
-          <div className="card shadow-sm">
+          <div className="card shadow-sm h-100 d-flex flex-column">
             <div className="card-header bg-white py-3">
               <div className="d-flex align-items-center gap-2">
                 <Bell size={20} className="text-primary-purple" />
                 <h5 className="mb-0">Notificações</h5>
               </div>
             </div>
-            <div className="card-body">
+            <div className="card-body flex-grow-1">
               <div className="d-flex flex-column gap-3">
                 <div className="form-check form-switch">
                   <input
@@ -155,7 +155,7 @@ export function AdminSettings() {
                   </label>
                 </div>
               </div>
-              <button type="submit" className="btn btn-primary mt-3">
+              <button type="submit" className="btn btn-primary mt-auto">
                 <Save size={16} className="me-2" />
                 Salvar Alterações
               </button>
@@ -165,14 +165,14 @@ export function AdminSettings() {
 
         {/* Security Settings */}
         <div className="col-lg-6">
-          <div className="card shadow-sm">
+          <div className="card shadow-sm h-100 d-flex flex-column">
             <div className="card-header bg-white py-3">
               <div className="d-flex align-items-center gap-2">
                 <Lock size={20} className="text-primary-purple" />
                 <h5 className="mb-0">Segurança</h5>
               </div>
             </div>
-            <div className="card-body">
+            <div className="card-body flex-grow-1">
               <div className="d-flex flex-column gap-3">
                 <div className="form-check form-switch">
                   <input
@@ -215,7 +215,7 @@ export function AdminSettings() {
                   />
                 </div>
               </div>
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary mt-auto">
                 <Save size={16} className="me-2" />
                 Salvar Alterações
               </button>
@@ -225,14 +225,14 @@ export function AdminSettings() {
 
         {/* Appearance Settings */}
         <div className="col-lg-6">
-          <div className="card shadow-sm">
+          <div className="card shadow-sm h-100 d-flex flex-column">
             <div className="card-header bg-white py-3">
               <div className="d-flex align-items-center gap-2">
                 <Palette size={20} className="text-primary-purple" />
                 <h5 className="mb-0">Aparência</h5>
               </div>
             </div>
-            <div className="card-body">
+            <div className="card-body flex-grow-1">
               <form>
                 <div className="mb-3">
                   <label className="form-label">Cor Primária</label>
@@ -274,7 +274,7 @@ export function AdminSettings() {
                     accept="image/*"
                   />
                 </div>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary mt-auto">
                   <Save size={16} className="me-2" />
                   Salvar Alterações
                 </button>
@@ -285,14 +285,14 @@ export function AdminSettings() {
 
         {/* Database Settings */}
         <div className="col-lg-6">
-          <div className="card shadow-sm">
+          <div className="card shadow-sm h-100 d-flex flex-column">
             <div className="card-header bg-white py-3">
               <div className="d-flex align-items-center gap-2">
                 <Database size={20} className="text-primary-purple" />
                 <h5 className="mb-0">Banco de Dados</h5>
               </div>
             </div>
-            <div className="card-body">
+            <div className="card-body flex-grow-1">
               <div className="mb-4">
                 <h6 className="mb-3">Backup e Manutenção</h6>
                 <div className="d-flex flex-column gap-2">

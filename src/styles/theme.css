@@ -1,0 +1,77 @@
+/* Course Player Dark Theme */
+.course-player-dark {
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+}
+
+.course-player-dark .bg-secondary {
+  background-color: #2d2d2d !important;
+}
+
+.course-player-dark .text-light {
+  color: #e0e0e0 !important;
+}
+
+.course-player-dark .text-secondary {
+  color: #a0a0a0 !important;
+}
+
+.course-player-dark .border-secondary {
+  border-color: #404040 !important;
+}
+
+.course-player-dark .bg-dark {
+  background-color: #1a1a1a !important;
+}
+
+.course-player-dark .btn-light {
+  background-color: #3d3d3d !important;
+  color: #e0e0e0 !important;
+  border-color: #404040 !important;
+}
+
+.course-player-dark .btn-light:hover {
+  background-color: #4d4d4d !important;
+}
+
+.course-player-dark .btn-outline-secondary {
+  color: #a0a0a0 !important;
+  border-color: #404040 !important;
+}
+
+.course-player-dark .btn-outline-secondary:hover {
+  background-color: #404040 !important;
+  color: #e0e0e0 !important;
+}
+
+.course-player-dark .list-group-item {
+  background-color: #2d2d2d !important;
+  color: #e0e0e0 !important;
+  border-color: #404040 !important;
+}
+
+.course-player-dark .list-group-item.active {
+  background-color: #6a2e99 !important;
+  border-color: #6a2e99 !important;
+}
+
+.course-player-dark .list-group-item:hover:not(.locked) {
+  background-color: #3d3d3d !important;
+}
+
+.course-player-dark .card {
+  background-color: #2d2d2d !important;
+  border-color: #404040 !important;
+}
+
+.course-player-dark .card-header {
+  background-color: #1a1a1a !important;
+  border-color: #404040 !important;
+}
+
+.course-player-dark .h4,
+.course-player-dark .h5,
+.course-player-dark h2,
+.course-player-dark h3 {
+  color: #e0e0e0 !important;
+}

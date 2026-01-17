@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { ArrowLeft, CheckCircle, Circle, Lock, PlayCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle, Circle, Lock, PlayCircle, Sun, Moon } from "lucide-react";
 
 interface CoursePlayerProps {
     courseId?: number;
@@ -11,6 +11,16 @@ export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerPro
     const { courseId: paramCourseId } = useParams();
     const courseId = propCourseId || Number(paramCourseId) || 1;
     const [currentLesson, setCurrentLesson] = useState(0);
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        const savedTheme = localStorage.getItem("coursePlayerTheme");
+        return savedTheme === "dark";
+    });
+
+    const toggleTheme = () => {
+        const newDarkMode = !isDarkMode;
+        setIsDarkMode(newDarkMode);
+        localStorage.setItem("coursePlayerTheme", newDarkMode ? "dark" : "light");
+    };
 
     const course = {
         id: courseId,
@@ -43,23 +53,23 @@ export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerPro
     const completedCount = course.lessons.filter(l => l.completed).length;
 
     return (
-        <div className="min-vh-100 bg-light">
+        <div className={`min-vh-100 ${isDarkMode ? 'bg-dark course-player-dark' : 'bg-light'}`}>
             {/* Header */}
-            <div className="bg-white border-bottom sticky-top" style={{ zIndex: 1020 }}>
+            <div className={`${isDarkMode ? 'bg-secondary border-secondary' : 'bg-white border-bottom'} sticky-top`} style={{ zIndex: 1020 }}>
                 <div className="container-fluid px-4 py-3">
                     <div className="d-flex align-items-center gap-3">
                         <button
                             onClick={onBack}
-                            className="btn btn-link text-secondary p-0"
+                            className={`btn btn-link ${isDarkMode ? 'text-light' : 'text-secondary'} p-0`}
                         >
                             <ArrowLeft size={20} />
                         </button>
                         <div className="flex-grow-1">
-                            <h1 className="h5 mb-0 text-dark">{course.title}</h1>
-                            <p className="small text-muted mb-0">{course.instructor}</p>
+                            <h1 className={`h5 mb-0 ${isDarkMode ? 'text-light' : 'text-dark'}`}>{course.title}</h1>
+                            <p className={`small ${isDarkMode ? 'text-secondary' : 'text-muted'} mb-0`}>{course.instructor}</p>
                         </div>
                         <div className="text-end d-none d-md-block">
-                            <p className="small text-muted mb-1">{completedCount} de {course.lessons.length} aulas concluídas</p>
+                            <p className={`small ${isDarkMode ? 'text-secondary' : 'text-muted'} mb-1`}>{completedCount} de {course.lessons.length} aulas concluídas</p>
                             <div className="progress" style={{ height: '8px', width: '200px' }}>
                                 <div
                                     className="progress-bar"
@@ -91,26 +101,35 @@ export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerPro
                                 </div>
                             </div>
 
-                            <div className="card border-0 shadow-sm p-4">
+                            <div className={`card border-0 shadow-sm p-4 ${isDarkMode ? 'bg-secondary text-light' : ''}`}>
                                 <div className="d-flex flex-column flex-md-row align-items-md-start justify-content-between gap-3 mb-4">
                                     <div>
-                                        <h2 className="h4 text-dark mb-2">
+                                        <h2 className={`h4 ${isDarkMode ? 'text-light' : 'text-dark'} mb-2`}>
                                             Aula {currentLesson + 1}: {course.lessons[currentLesson].title}
                                         </h2>
-                                        <p className="text-muted mb-0">Duração: {course.lessons[currentLesson].duration}</p>
+                                        <p className={isDarkMode ? 'text-secondary mb-0' : 'text-muted mb-0'}>Duração: {course.lessons[currentLesson].duration}</p>
                                     </div>
-                                    {!course.lessons[currentLesson].completed && (
+                                    <div className="d-flex gap-2 flex-wrap">
                                         <button
-                                            onClick={handleCompleteLesson}
-                                            className="btn btn-success text-dark d-flex align-items-center gap-2"
+                                            onClick={toggleTheme}
+                                            className={`btn btn-sm ${isDarkMode ? 'btn-light' : 'btn-outline-secondary'}`}
+                                            title={isDarkMode ? "Ativar tema claro" : "Ativar tema escuro"}
                                         >
-                                            <CheckCircle size={20} />
-                                            Marcar como Concluída
+                                            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
                                         </button>
-                                    )}
+                                        {!course.lessons[currentLesson].completed && (
+                                            <button
+                                                onClick={handleCompleteLesson}
+                                                className="btn btn-success btn-sm text-dark d-flex align-items-center gap-2"
+                                            >
+                                                <CheckCircle size={18} />
+                                                Marcar como Concluída
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
 
-                                <div className="text-secondary">
+                                <div className={isDarkMode ? 'text-secondary' : 'text-secondary'}>
                                     <p>
                                         Nesta aula você aprenderá conceitos essenciais sobre {course.lessons[currentLesson].title.toLowerCase()}.
                                         Assista com atenção e faça anotações dos pontos principais.
@@ -140,9 +159,9 @@ export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerPro
 
                     {/* Lessons Sidebar */}
                     <div className="col-12 col-lg-4">
-                        <div className="card border-0 shadow-sm h-100">
-                            <div className="card-header bg-white border-bottom p-4">
-                                <h3 className="h5 mb-0 text-dark">Conteúdo do Curso</h3>
+                        <div className={`card border-0 shadow-sm h-100 ${isDarkMode ? 'bg-secondary text-light' : ''}`}>
+                            <div className={`card-header ${isDarkMode ? 'bg-dark border-secondary' : 'bg-white border-bottom'} p-4`}>
+                                <h3 className={`h5 mb-0 ${isDarkMode ? 'text-light' : 'text-dark'}`}>Conteúdo do Curso</h3>
                             </div>
                             <div className="card-body p-0 lesson-list">
                                 <div className="list-group list-group-flush">
@@ -152,7 +171,7 @@ export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerPro
                                             onClick={() => !lesson.locked && setCurrentLesson(index)}
                                             disabled={lesson.locked}
                                             className={`list-group-item list-group-item-action p-3 border-0 ${currentLesson === index ? "active bg-primary-purple text-white" : ""
-                                                } ${lesson.locked ? "bg-light text-muted" : ""}`}
+                                                } ${lesson.locked ? isDarkMode ? "bg-dark text-muted" : "bg-light text-muted" : isDarkMode ? "bg-secondary text-light" : ""}`}
                                         >
                                             <div className="d-flex align-items-start gap-3">
                                                 <div className="mt-1">
@@ -168,7 +187,7 @@ export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerPro
                                                     <p className="mb-1 fw-medium line-clamp-2">
                                                         {index + 1}. {lesson.title}
                                                     </p>
-                                                    <p className={`small mb-0 ${currentLesson === index ? "text-white-50" : "text-muted"}`}>
+                                                    <p className={`small mb-0 ${currentLesson === index ? "text-white-50" : isDarkMode ? "text-secondary" : "text-muted"}`}>
                                                         {lesson.duration}
                                                     </p>
                                                 </div>

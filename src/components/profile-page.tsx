@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User, Mail, Phone, MapPin, Calendar, Camera, Save } from "lucide-react";
+import { User, Mail, Phone, MapPin, Calendar, Camera, Save, Eye, EyeOff } from "lucide-react";
 
 interface StudentProfilePageProps {
   userRole: "student" | "teacher" | "admin";
@@ -7,6 +7,9 @@ interface StudentProfilePageProps {
 
 export function StudentProfilePage({ userRole }: StudentProfilePageProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   
   // Dados mock baseados no role
   const profileData = {
@@ -38,6 +41,17 @@ export function StudentProfilePage({ userRole }: StudentProfilePageProps) {
 
   const currentProfile = profileData[userRole];
   const [formData, setFormData] = useState(currentProfile);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setProfileImage(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSave = () => {
     setIsEditing(false);
@@ -75,11 +89,22 @@ export function StudentProfilePage({ userRole }: StudentProfilePageProps) {
               <div className="position-relative d-inline-block mb-3">
                 <div 
                   className="rounded-circle bg-primary-purple d-flex align-items-center justify-content-center text-white"
-                  style={{ width: '120px', height: '120px', fontSize: '48px' }}
+                  style={{ width: '120px', height: '120px', fontSize: '48px', backgroundImage: profileImage ? `url(${profileImage})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}
                 >
-                  {formData.name.charAt(0)}
+                  {!profileImage && formData.name.charAt(0)}
                 </div>
-                <button className="btn btn-sm btn-primary rounded-circle position-absolute bottom-0 end-0">
+                <input
+                  type="file"
+                  id="profileImageInput"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={handleImageUpload}
+                />
+                <button 
+                  className="btn btn-sm btn-primary rounded-circle position-absolute bottom-0 end-0"
+                  onClick={() => document.getElementById('profileImageInput')?.click()}
+                  type="button"
+                >
                   <Camera size={16} />
                 </button>
               </div>
@@ -244,21 +269,71 @@ export function StudentProfilePage({ userRole }: StudentProfilePageProps) {
               <div className="row g-3">
                 <div className="col-md-6">
                   <label className="form-label">Nova Senha</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="••••••••"
-                    disabled={!isEditing}
-                  />
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type={showNewPassword ? "text" : "password"}
+                      className="form-control"
+                      placeholder="••••••••"
+                      disabled={!isEditing}
+                      style={{ paddingRight: isEditing ? '40px' : undefined }}
+                    />
+                    {isEditing && (
+                      <button
+                        type="button"
+                        style={{
+                          position: 'absolute',
+                          right: '10px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          background: 'none',
+                          border: 'none',
+                          color: '#6c757d',
+                          cursor: 'pointer',
+                          padding: '0',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                      >
+                        {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">Confirmar Senha</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="••••••••"
-                    disabled={!isEditing}
-                  />
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      className="form-control"
+                      placeholder="••••••••"
+                      disabled={!isEditing}
+                      style={{ paddingRight: isEditing ? '40px' : undefined }}
+                    />
+                    {isEditing && (
+                      <button
+                        type="button"
+                        style={{
+                          position: 'absolute',
+                          right: '10px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          background: 'none',
+                          border: 'none',
+                          color: '#6c757d',
+                          cursor: 'pointer',
+                          padding: '0',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      >
+                        {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
