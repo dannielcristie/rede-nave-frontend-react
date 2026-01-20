@@ -1,45 +1,44 @@
 import { Link } from "react-router-dom";
 import { BookOpen, Calendar, Award, TrendingUp, Play } from "lucide-react";
 import { ImageWithFallback } from "../ui/ImageWithFallback";
+import { useAuth } from "../../contexts/AuthContext";
+import { useEffect, useState } from "react";
+import { coursesService, Course } from "../../services/coursesService";
+
+interface EnrolledCourse extends Course {
+    enrollment: {
+        progress: number;
+        completed_lessons: number;
+        total_lessons: number;
+    }
+}
 
 export function StudentDashboard() {
-    const enrolledCourses = [
-        {
-            id: 1,
-            title: "Gestão Financeira para Empreendedoras",
-            progress: 60,
-            totalLessons: 12,
-            completedLessons: 7,
-            image: "https://images.unsplash.com/photo-1581093199592-d3c46ae94f40?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNobm9sb2d5JTIwZWR1Y2F0aW9ufGVufDF8fHx8MTc2MzAyNDI1MHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-        },
-        {
-            id: 2,
-            title: "Marketing Digital para Artesãs",
-            progress: 30,
-            totalLessons: 16,
-            completedLessons: 5,
-            image: "https://images.unsplash.com/photo-1581093199592-d3c46ae94f40?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNobm9sb2d5JTIwZWR1Y2F0aW9ufGVufDF8fHx8MTc2MzAyNDI1MHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-        },
-        {
-            id: 3,
-            title: "Liderança Comunitária e Empoderamento",
-            progress: 85,
-            totalLessons: 14,
-            completedLessons: 12,
-            image: "https://images.unsplash.com/photo-1581093199592-d3c46ae94f40?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNobm9sb2d5JTIwZWR1Y2F0aW9ufGVufDF8fHx8MTc2MzAyNDI1MHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-        }
-    ];
+    const { user } = useAuth();
+    const [enrolledCourses, setEnrolledCourses] = useState<EnrolledCourse[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        coursesService.listMyCourses()
+            .then((data: any[]) => setEnrolledCourses(data))
+            .catch(err => console.error("Failed to load courses", err))
+            .finally(() => setLoading(false));
+    }, []);
 
     const upcomingEvents = [
         { title: "Oficina: Precificação de Produtos", date: "15 Dez 2025", time: "14h" },
         { title: "Live: Redes Sociais para Artesãs", date: "18 Dez 2025", time: "19h" }
     ];
 
+    if (loading) {
+        return <div className="p-4 text-center">Carregando dashboard...</div>;
+    }
+
     return (
         <div className="p-3 p-md-4">
             {/* Header */}
             <div className="mb-4">
-                <h1 className="h3 mb-2">Bem-vinda de volta, Maria!</h1>
+                <h1 className="h3 mb-2">Bem-vinda de volta, {user?.name.split(" ")[0]}!</h1>
                 <p className="text-muted">Continue sua jornada de aprendizado</p>
             </div>
 
@@ -53,7 +52,7 @@ export function StudentDashboard() {
                             </div>
                             <div>
                                 <p className="text-muted mb-1 small">Cursos Ativos</p>
-                                <h3 className="h4 mb-0">3</h3>
+                                <h3 className="h4 mb-0">{enrolledCourses.length}</h3>
                             </div>
                         </div>
                     </div>
@@ -67,7 +66,7 @@ export function StudentDashboard() {
                             </div>
                             <div>
                                 <p className="text-muted mb-1 small">Certificados</p>
-                                <h3 className="h4 mb-0">2</h3>
+                                <h3 className="h4 mb-0">0</h3>
                             </div>
                         </div>
                     </div>
@@ -95,7 +94,7 @@ export function StudentDashboard() {
                             </div>
                             <div>
                                 <p className="text-muted mb-1 small">Horas de Estudo</p>
-                                <h3 className="h4 mb-0">24h</h3>
+                                <h3 className="h4 mb-0">0h</h3>
                             </div>
                         </div>
                     </div>
@@ -114,49 +113,55 @@ export function StudentDashboard() {
                     </Link>
                 </div>
 
-                <div className="row g-3 g-md-4">
-                    {enrolledCourses.map((course) => (
-                        <div key={course.id} className="col-12 col-md-6 col-lg-4">
-                            <div className="card h-100 card-hover">
-                                <div className="course-image-container">
-                                    <ImageWithFallback
-                                        src={course.image}
-                                        alt={course.title}
-                                        className="img-cover"
-                                    />
-                                    <div className="position-absolute bottom-0 start-0 end-0 p-3 gradient-overlay d-flex align-items-end">
-                                        <Link
-                                            to={`/course-player/${course.id}`}
-                                            className="btn btn-light btn-sm text-decoration-none d-inline-flex align-items-center"
-                                        >
-                                            <Play size={16} className="me-2" />
-                                            Continuar
-                                        </Link>
-                                    </div>
-                                </div>
-                                <div className="card-body">
-                                    <h3 className="h6 mb-3">{course.title}</h3>
-                                    <div className="mb-2">
-                                        <div className="d-flex justify-content-between text-muted small mb-2">
-                                            <span>{course.completedLessons} de {course.totalLessons} aulas</span>
-                                            <span>{course.progress}%</span>
+                {enrolledCourses.length === 0 ? (
+                    <div className="alert alert-info">
+                        Você ainda não está matriculada em nenhum curso. <Link to="/">Explore nossos cursos!</Link>
+                    </div>
+                ) : (
+                    <div className="row g-3 g-md-4">
+                        {enrolledCourses.map((course) => (
+                            <div key={course.id} className="col-12 col-md-6 col-lg-4">
+                                <div className="card h-100 card-hover">
+                                    <div className="course-image-container">
+                                        <ImageWithFallback
+                                            src={course.thumbnail_url}
+                                            alt={course.title}
+                                            className="img-cover"
+                                        />
+                                        <div className="position-absolute bottom-0 start-0 end-0 p-3 gradient-overlay d-flex align-items-end">
+                                            <Link
+                                                to={`/course-player/${course.slug}`} // Using slug for cleaner URLs
+                                                className="btn btn-light btn-sm text-decoration-none d-inline-flex align-items-center"
+                                            >
+                                                <Play size={16} className="me-2" />
+                                                Continuar
+                                            </Link>
                                         </div>
-                                        <div className="progress" style={{ height: '6px' }}>
-                                            <div
-                                                className="progress-bar"
-                                                role="progressbar"
-                                                style={{ width: `${course.progress}%` }}
-                                                aria-valuenow={course.progress}
-                                                aria-valuemin={0}
-                                                aria-valuemax={100}
-                                            />
+                                    </div>
+                                    <div className="card-body">
+                                        <h3 className="h6 mb-3">{course.title}</h3>
+                                        <div className="mb-2">
+                                            <div className="d-flex justify-content-between text-muted small mb-2">
+                                                <span>{course.enrollment.completed_lessons} de {course.enrollment.total_lessons} aulas</span>
+                                                <span>{Number(course.enrollment.progress)}%</span>
+                                            </div>
+                                            <div className="progress" style={{ height: '6px' }}>
+                                                <div
+                                                    className="progress-bar"
+                                                    role="progressbar"
+                                                    style={{ width: `${course.enrollment.progress}%` }}
+                                                    aria-valuenow={Number(course.enrollment.progress)}
+                                                    aria-valuemin={0}
+                                                    aria-valuemax={100}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Upcoming Events */}

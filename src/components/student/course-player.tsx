@@ -1,16 +1,27 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, CheckCircle, Circle, Lock, PlayCircle, Sun, Moon } from "lucide-react";
+import { coursesService, Course, Lesson } from "../../services/coursesService";
 
 interface CoursePlayerProps {
-    courseId?: number;
+    courseId?: string; // It's actually a slug now usually
     onBack: () => void;
 }
 
 export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerProps) {
-    const { courseId: paramCourseId } = useParams();
-    const courseId = propCourseId || Number(paramCourseId) || 1;
-    const [currentLesson, setCurrentLesson] = useState(0);
+    const { courseId: paramSlug } = useParams();
+    const slug = propCourseId || paramSlug;
+    const navigate = useNavigate();
+
+    const [course, setCourse] = useState<Course | null>(null);
+    const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
+    const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [loadingLesson, setLoadingLesson] = useState(false);
+
+    // Flatten lessons for easier navigation
+    const [allLessons, setAllLessons] = useState<Lesson[]>([]);
+
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const savedTheme = localStorage.getItem("coursePlayerTheme");
         return savedTheme === "dark";
@@ -22,35 +33,63 @@ export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerPro
         localStorage.setItem("coursePlayerTheme", newDarkMode ? "dark" : "light");
     };
 
-    const course = {
-        id: courseId,
-        title: "Gestão Financeira para Empreendedoras",
-        instructor: "Profa. Ana Paula Silva",
-        progress: 60,
-        lessons: [
-            { id: 1, title: "Introdução à Gestão Financeira", duration: "12:30", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-            { id: 2, title: "Controle de Fluxo de Caixa", duration: "18:45", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-            { id: 3, title: "Planejamento Financeiro Pessoal", duration: "15:20", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-            { id: 4, title: "Separação de Finanças Pessoais e Empresariais", duration: "20:10", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-            { id: 5, title: "Custos Fixos e Variáveis", duration: "16:30", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-            { id: 6, title: "Formação de Preço", duration: "22:15", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-            { id: 7, title: "Margem de Lucro", duration: "14:50", completed: true, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-            { id: 8, title: "Controle de Estoque", duration: "19:30", completed: false, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-            { id: 9, title: "Gestão de Contas a Pagar e Receber", duration: "17:40", completed: false, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-            { id: 10, title: "Indicadores Financeiros", duration: "21:00", completed: false, locked: false, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-            { id: 11, title: "Planejamento Tributário Básico", duration: "25:20", completed: false, locked: true, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-            { id: 12, title: "Projeto Final - Plano Financeiro", duration: "30:00", completed: false, locked: true, videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
-        ]
-    };
+    useEffect(() => {
+        if (!slug) return;
 
-    const handleCompleteLesson = () => {
-        // Marcar aula como concluída
-        if (currentLesson < course.lessons.length - 1) {
-            setCurrentLesson(currentLesson + 1);
+        setLoading(true);
+        coursesService.getCourse(slug)
+            .then(data => {
+                setCourse(data);
+                // Flatten lessons
+                const flattened: Lesson[] = [];
+                data.modules?.forEach(m => {
+                    m.lessons.forEach(l => flattened.push(l));
+                });
+                setAllLessons(flattened);
+
+                if (flattened.length > 0) {
+                    loadLesson(flattened[0].id);
+                    setCurrentLessonIndex(0);
+                }
+            })
+            .catch(err => console.error("Failed to load course", err))
+            .finally(() => setLoading(false));
+    }, [slug]);
+
+    const loadLesson = async (lessonId: string) => {
+        setLoadingLesson(true);
+        try {
+            const lessonData = await coursesService.getLesson(lessonId);
+            setCurrentLesson(lessonData);
+        } catch (error) {
+            console.error("Failed to load lesson", error);
+        } finally {
+            setLoadingLesson(false);
         }
     };
 
-    const completedCount = course.lessons.filter(l => l.completed).length;
+    const handleLessonSelect = (index: number) => {
+        setCurrentLessonIndex(index);
+        loadLesson(allLessons[index].id);
+    };
+
+    const handleNextLesson = () => {
+        if (currentLessonIndex < allLessons.length - 1) {
+            handleLessonSelect(currentLessonIndex + 1);
+        }
+    };
+
+    const handlePrevLesson = () => {
+        if (currentLessonIndex > 0) {
+            handleLessonSelect(currentLessonIndex - 1);
+        }
+    };
+
+    if (loading || !course) {
+        return <div className="min-vh-100 d-flex justify-content-center align-items-center">Carregando curso...</div>;
+    }
+
+    const completedCount = 0; // TODO: Fetch progress from backend
 
     return (
         <div className={`min-vh-100 ${isDarkMode ? 'bg-dark course-player-dark' : 'bg-light'}`}>
@@ -66,16 +105,16 @@ export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerPro
                         </button>
                         <div className="flex-grow-1">
                             <h1 className={`h5 mb-0 ${isDarkMode ? 'text-light' : 'text-dark'}`}>{course.title}</h1>
-                            <p className={`small ${isDarkMode ? 'text-secondary' : 'text-muted'} mb-0`}>{course.instructor}</p>
+                            <p className={`small ${isDarkMode ? 'text-secondary' : 'text-muted'} mb-0`}>{course.instructor.name}</p>
                         </div>
                         <div className="text-end d-none d-md-block">
-                            <p className={`small ${isDarkMode ? 'text-secondary' : 'text-muted'} mb-1`}>{completedCount} de {course.lessons.length} aulas concluídas</p>
+                            <p className={`small ${isDarkMode ? 'text-secondary' : 'text-muted'} mb-1`}>{completedCount} de {allLessons.length} aulas concluídas</p>
                             <div className="progress" style={{ height: '8px', width: '200px' }}>
                                 <div
                                     className="progress-bar"
                                     role="progressbar"
-                                    style={{ width: `${(completedCount / course.lessons.length) * 100}%` }}
-                                    aria-valuenow={(completedCount / course.lessons.length) * 100}
+                                    style={{ width: `${(completedCount / allLessons.length) * 100}%` }}
+                                    aria-valuenow={(completedCount / allLessons.length) * 100}
                                     aria-valuemin={0}
                                     aria-valuemax={100}
                                 />
@@ -89,72 +128,78 @@ export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerPro
                 <div className="row g-4">
                     {/* Video Player */}
                     <div className="col-12 col-lg-8">
-                        <div className="d-flex flex-column gap-4">
-                            <div className="card overflow-hidden border-0 shadow-sm">
-                                <div className="ratio ratio-16x9 bg-black">
-                                    <iframe
-                                        src={course.lessons[currentLesson].videoUrl}
-                                        title={course.lessons[currentLesson].title}
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                    ></iframe>
-                                </div>
-                            </div>
-
-                            <div className={`card border-0 shadow-sm p-4 ${isDarkMode ? 'bg-secondary text-light' : ''}`}>
-                                <div className="d-flex flex-column flex-md-row align-items-md-start justify-content-between gap-3 mb-4">
-                                    <div>
-                                        <h2 className={`h4 ${isDarkMode ? 'text-light' : 'text-dark'} mb-2`}>
-                                            Aula {currentLesson + 1}: {course.lessons[currentLesson].title}
-                                        </h2>
-                                        <p className={isDarkMode ? 'text-secondary mb-0' : 'text-muted mb-0'}>Duração: {course.lessons[currentLesson].duration}</p>
+                        {currentLesson && (
+                            <div className="d-flex flex-column gap-4">
+                                <div className="card overflow-hidden border-0 shadow-sm">
+                                    <div className="ratio ratio-16x9 bg-black">
+                                        {currentLesson.video_url ? (
+                                            <iframe
+                                                src={currentLesson.video_url}
+                                                title={currentLesson.title}
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                            ></iframe>
+                                        ) : (
+                                            <div className="d-flex align-items-center justify-content-center text-white">
+                                                <p>Vídeo indisponível ou acesso restrito.</p>
+                                            </div>
+                                        )}
                                     </div>
-                                    <div className="d-flex gap-2 flex-wrap">
-                                        <button
-                                            onClick={toggleTheme}
-                                            className={`btn btn-sm ${isDarkMode ? 'btn-light' : 'btn-outline-secondary'}`}
-                                            title={isDarkMode ? "Ativar tema claro" : "Ativar tema escuro"}
-                                        >
-                                            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-                                        </button>
-                                        {!course.lessons[currentLesson].completed && (
+                                </div>
+
+                                <div className={`card border-0 shadow-sm p-4 ${isDarkMode ? 'bg-secondary text-light' : ''}`}>
+                                    <div className="d-flex flex-column flex-md-row align-items-md-start justify-content-between gap-3 mb-4">
+                                        <div>
+                                            <h2 className={`h4 ${isDarkMode ? 'text-light' : 'text-dark'} mb-2`}>
+                                                Aula {currentLesson.order}: {currentLesson.title}
+                                            </h2>
+                                            <p className={isDarkMode ? 'text-secondary mb-0' : 'text-muted mb-0'}>
+                                                Duração: {Math.floor(currentLesson.video_duration_seconds / 60)} min
+                                            </p>
+                                        </div>
+                                        <div className="d-flex gap-2 flex-wrap">
                                             <button
-                                                onClick={handleCompleteLesson}
+                                                onClick={toggleTheme}
+                                                className={`btn btn-sm ${isDarkMode ? 'btn-light' : 'btn-outline-secondary'}`}
+                                                title={isDarkMode ? "Ativar tema claro" : "Ativar tema escuro"}
+                                            >
+                                                {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                                            </button>
+                                            <button
                                                 className="btn btn-success btn-sm text-dark d-flex align-items-center gap-2"
                                             >
                                                 <CheckCircle size={18} />
                                                 Marcar como Concluída
                                             </button>
-                                        )}
+                                        </div>
+                                    </div>
+
+                                    <div className={isDarkMode ? 'text-secondary' : 'text-secondary'}>
+                                        <p>
+                                            {currentLesson.content || "Sem descrição disponível."}
+                                        </p>
                                     </div>
                                 </div>
 
-                                <div className={isDarkMode ? 'text-secondary' : 'text-secondary'}>
-                                    <p>
-                                        Nesta aula você aprenderá conceitos essenciais sobre {course.lessons[currentLesson].title.toLowerCase()}.
-                                        Assista com atenção e faça anotações dos pontos principais.
-                                    </p>
+                                {/* Navigation Buttons */}
+                                <div className="d-flex gap-3">
+                                    <button
+                                        onClick={handlePrevLesson}
+                                        disabled={currentLessonIndex === 0}
+                                        className="btn btn-outline-secondary flex-fill"
+                                    >
+                                        Aula Anterior
+                                    </button>
+                                    <button
+                                        onClick={handleNextLesson}
+                                        disabled={currentLessonIndex === allLessons.length - 1}
+                                        className="btn btn-primary flex-fill"
+                                    >
+                                        Próxima Aula
+                                    </button>
                                 </div>
                             </div>
-
-                            {/* Navigation Buttons */}
-                            <div className="d-flex gap-3">
-                                <button
-                                    onClick={() => setCurrentLesson(Math.max(0, currentLesson - 1))}
-                                    disabled={currentLesson === 0}
-                                    className="btn btn-outline-secondary flex-fill"
-                                >
-                                    Aula Anterior
-                                </button>
-                                <button
-                                    onClick={() => setCurrentLesson(Math.min(course.lessons.length - 1, currentLesson + 1))}
-                                    disabled={currentLesson === course.lessons.length - 1}
-                                    className="btn btn-primary flex-fill"
-                                >
-                                    Próxima Aula
-                                </button>
-                            </div>
-                        </div>
+                        )}
                     </div>
 
                     {/* Lessons Sidebar */}
@@ -163,39 +208,45 @@ export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerPro
                             <div className={`card-header ${isDarkMode ? 'bg-dark border-secondary' : 'bg-white border-bottom'} p-4`}>
                                 <h3 className={`h5 mb-0 ${isDarkMode ? 'text-light' : 'text-dark'}`}>Conteúdo do Curso</h3>
                             </div>
-                            <div className="card-body p-0 lesson-list">
-                                <div className="list-group list-group-flush">
-                                    {course.lessons.map((lesson, index) => (
-                                        <button
-                                            key={lesson.id}
-                                            onClick={() => !lesson.locked && setCurrentLesson(index)}
-                                            disabled={lesson.locked}
-                                            className={`list-group-item list-group-item-action p-3 border-0 ${currentLesson === index ? "active bg-primary-purple text-white" : ""
-                                                } ${lesson.locked ? isDarkMode ? "bg-dark text-muted" : "bg-light text-muted" : isDarkMode ? "bg-secondary text-light" : ""}`}
-                                        >
-                                            <div className="d-flex align-items-start gap-3">
-                                                <div className="mt-1">
-                                                    {lesson.locked ? (
-                                                        <Lock size={16} />
-                                                    ) : lesson.completed ? (
-                                                        <CheckCircle size={16} className={currentLesson === index ? "text-white" : "text-success"} />
-                                                    ) : (
-                                                        <Circle size={16} />
-                                                    )}
-                                                </div>
-                                                <div className="flex-grow-1">
-                                                    <p className="mb-1 fw-medium line-clamp-2">
-                                                        {index + 1}. {lesson.title}
-                                                    </p>
-                                                    <p className={`small mb-0 ${currentLesson === index ? "text-white-50" : isDarkMode ? "text-secondary" : "text-muted"}`}>
-                                                        {lesson.duration}
-                                                    </p>
-                                                </div>
-                                                {currentLesson === index && <PlayCircle size={20} className="flex-shrink-0" />}
-                                            </div>
-                                        </button>
-                                    ))}
-                                </div>
+                            <div className="card-body p-0 lesson-list overflow-auto" style={{ maxHeight: '80vh' }}>
+                                {/* Group by modules if present */}
+                                {course.modules ? course.modules.map(module => (
+                                    <div key={module.id}>
+                                        <div className={`p-3 fw-bold small text-uppercase ${isDarkMode ? "bg-dark text-muted" : "bg-light text-muted"}`}>
+                                            {module.title}
+                                        </div>
+                                        <div className="list-group list-group-flush">
+                                            {module.lessons.map(lesson => {
+                                                const globalIndex = allLessons.findIndex(l => l.id === lesson.id);
+                                                const isActive = currentLessonIndex === globalIndex;
+                                                return (
+                                                    <button
+                                                        key={lesson.id}
+                                                        onClick={() => handleLessonSelect(globalIndex)}
+                                                        className={`list-group-item list-group-item-action p-3 border-0 ${isActive ? "active bg-primary-purple text-white" : ""
+                                                            } ${isDarkMode ? "bg-secondary text-light" : ""}`}
+                                                    >
+                                                        <div className="d-flex align-items-start gap-3">
+                                                            <div className="mt-1">
+                                                                {isActive ? <PlayCircle size={16} /> : <Circle size={16} />}
+                                                            </div>
+                                                            <div className="flex-grow-1 text-start">
+                                                                <p className="mb-1 fw-medium line-clamp-2">
+                                                                    {lesson.order}. {lesson.title}
+                                                                </p>
+                                                                <p className={`small mb-0 ${isActive ? "text-white-50" : isDarkMode ? "text-secondary" : "text-muted"}`}>
+                                                                    {Math.floor(lesson.video_duration_seconds / 60)} min
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )) : (
+                                    <div className="p-3">Sem conteúdo disponível</div>
+                                )}
                             </div>
                         </div>
                     </div>
