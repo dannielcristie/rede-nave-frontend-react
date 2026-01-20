@@ -43,6 +43,19 @@ export interface Course {
     modules?: Module[];
 }
 
+export interface Enrollment {
+    status: "active" | "completed" | "in_progress";
+    progress: number; // percentage 0-100
+    completed_lessons: number;
+    total_lessons: number;
+    enrolled_at: string;
+    last_accessed_at?: string;
+}
+
+export interface EnrolledCourse extends Course {
+    enrollment: Enrollment;
+}
+
 class CoursesService {
     async listCourses(): Promise<Course[]> {
         const response = await api.get("/courses");
@@ -59,7 +72,7 @@ class CoursesService {
         return response.data;
     }
 
-    async listMyCourses(): Promise<(Course & { enrollment: any })[]> { // Define proper type for enrollment later
+    async listMyCourses(): Promise<EnrolledCourse[]> {
         const response = await api.get("/courses/my-courses");
         return response.data;
     }

@@ -36,9 +36,14 @@ export function Login() {
         try {
             await login(loginEmail, loginPassword);
             navigate('/dashboard');
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err);
-            setError(err.response?.data?.error || 'Falha no login. Verifique suas credenciais.');
+            if (err && typeof err === 'object' && 'response' in err) {
+                const axiosError = err as { response: { data: { error: string } } };
+                setError(axiosError.response?.data?.error || 'Falha no login. Verifique suas credenciais.');
+            } else {
+                setError('Falha no login. Verifique suas credenciais.');
+            }
         }
     };
 
@@ -60,9 +65,14 @@ export function Login() {
                 role: "student" // Default role for self-registration
             });
             navigate('/dashboard');
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err);
-            setError(err.response?.data?.error || 'Falha no cadastro. Tente novamente.');
+            if (err && typeof err === 'object' && 'response' in err) {
+                const axiosError = err as { response: { data: { error: string } } };
+                setError(axiosError.response?.data?.error || 'Falha no cadastro. Tente novamente.');
+            } else {
+                setError('Falha no cadastro. Tente novamente.');
+            }
         }
     };
 

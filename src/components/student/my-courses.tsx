@@ -1,16 +1,7 @@
 import { BookOpen, Clock, CheckCircle, PlayCircle } from "lucide-react";
 import { ImageWithFallback } from "../ui/ImageWithFallback";
-import { coursesService, type Course } from "../../services/coursesService";
+import { coursesService, type EnrolledCourse } from "../../services/coursesService";
 import { useEffect, useState } from "react";
-
-interface EnrolledCourse extends Course {
-  enrollment: {
-    progress: number;
-    status: string;
-    completed_lessons: number;
-    total_lessons: number;
-  }
-}
 
 interface MyCoursesProps {
   onNavigate: (page: string, data?: unknown) => void;
@@ -22,7 +13,7 @@ export function StudentMyCourses({ onNavigate }: MyCoursesProps) {
 
   useEffect(() => {
     coursesService.listMyCourses()
-      .then((data: any[]) => setCourses(data))
+      .then((data) => setCourses(data))
       .catch(err => console.error("Failed to load courses", err))
       .finally(() => setLoading(false));
   }, []);

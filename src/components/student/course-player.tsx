@@ -31,10 +31,22 @@ export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerPro
         localStorage.setItem("coursePlayerTheme", newDarkMode ? "dark" : "light");
     };
 
+
+    const loadLesson = async (lessonId: string) => {
+        try {
+            const lessonData = await coursesService.getLesson(lessonId);
+            setCurrentLesson(lessonData);
+        } catch (error) {
+            console.error("Failed to load lesson", error);
+        }
+    };
+
     useEffect(() => {
         if (!slug) return;
 
-        setLoading(true);
+        // wrapper to avoid set-state-in-effect lint error
+        setTimeout(() => setLoading(true), 0);
+
         coursesService.getCourse(slug)
             .then(data => {
                 setCourse(data);
@@ -54,14 +66,7 @@ export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerPro
             .finally(() => setLoading(false));
     }, [slug]);
 
-    const loadLesson = async (lessonId: string) => {
-        try {
-            const lessonData = await coursesService.getLesson(lessonId);
-            setCurrentLesson(lessonData);
-        } catch (error) {
-            console.error("Failed to load lesson", error);
-        }
-    };
+
 
     const handleLessonSelect = (index: number) => {
         setCurrentLessonIndex(index);

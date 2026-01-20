@@ -3,15 +3,7 @@ import { BookOpen, Calendar, Award, TrendingUp, Play } from "lucide-react";
 import { ImageWithFallback } from "../ui/ImageWithFallback";
 import { useAuth } from "../../contexts/AuthContext";
 import { useEffect, useState } from "react";
-import { coursesService, type Course } from "../../services/coursesService";
-
-interface EnrolledCourse extends Course {
-    enrollment: {
-        progress: number;
-        completed_lessons: number;
-        total_lessons: number;
-    }
-}
+import { coursesService, type EnrolledCourse } from "../../services/coursesService";
 
 export function StudentDashboard() {
     const { user } = useAuth();
@@ -20,7 +12,7 @@ export function StudentDashboard() {
 
     useEffect(() => {
         coursesService.listMyCourses()
-            .then((data: any[]) => setEnrolledCourses(data))
+            .then((data) => setEnrolledCourses(data))
             .catch(err => console.error("Failed to load courses", err))
             .finally(() => setLoading(false));
     }, []);

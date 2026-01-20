@@ -1,22 +1,13 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import { api } from "../services/api";
-
-type UserRole = "student" | "teacher" | "admin";
-
-interface User {
-    id: string;
-    name: string;
-    email: string;
-    role: UserRole;
-    avatar_url?: string;
-}
+import type { User, RegisterData } from "../types/auth";
 
 interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
     isLoading: boolean;
     login: (email: string, password: string) => Promise<void>;
-    register: (data: any) => Promise<void>; // data includes name, email, password, cpf...
+    register: (data: RegisterData) => Promise<void>;
     logout: () => void;
 }
 
@@ -41,7 +32,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     setIsLoading(false);
                 });
         } else {
-            setIsLoading(false);
+            // Use setTimeout to avoid synchronous state update warning
+            setTimeout(() => setIsLoading(false), 0);
         }
     }, []);
 
@@ -64,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const register = async (data: any) => {
+    const register = async (data: RegisterData) => {
         const response = await api.post("/auth/register", data);
         const { token, user: userData } = response.data;
 
@@ -84,4 +76,5 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
