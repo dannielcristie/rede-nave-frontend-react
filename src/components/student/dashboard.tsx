@@ -3,7 +3,7 @@ import { BookOpen, Calendar, Award, TrendingUp, Play } from "lucide-react";
 import { ImageWithFallback } from "../ui/ImageWithFallback";
 import { useAuth } from "../../contexts/AuthContext";
 import { useEffect, useState } from "react";
-import { coursesService, Course } from "../../services/coursesService";
+import { coursesService, type Course } from "../../services/coursesService";
 
 interface EnrolledCourse extends Course {
     enrollment: {

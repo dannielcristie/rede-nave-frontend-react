@@ -1,71 +1,38 @@
 import { BookOpen, Clock, CheckCircle, PlayCircle } from "lucide-react";
 import { ImageWithFallback } from "../ui/ImageWithFallback";
+import { coursesService, type Course } from "../../services/coursesService";
+import { useEffect, useState } from "react";
+
+interface EnrolledCourse extends Course {
+  enrollment: {
+    progress: number;
+    status: string;
+    completed_lessons: number;
+    total_lessons: number;
+  }
+}
 
 interface MyCoursesProps {
   onNavigate: (page: string, data?: unknown) => void;
 }
 
 export function StudentMyCourses({ onNavigate }: MyCoursesProps) {
-  const courses = [
-    {
-      id: 1,
-      title: "Fundamentos do Empreendedorismo Feminino",
-      progress: 75,
-      status: "in-progress",
-      thumbnail: "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=400",
-      lessons: 12,
-      completedLessons: 9,
-      duration: "4h 30min",
-      instructor: "Ana Santos"
-    },
-    {
-      id: 2,
-      title: "Marketing Digital para Pequenos Negócios",
-      progress: 45,
-      status: "in-progress",
-      thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400",
-      lessons: 15,
-      completedLessons: 7,
-      duration: "6h 15min",
-      instructor: "Carla Mendes"
-    },
-    {
-      id: 3,
-      title: "Artesanato e Criatividade",
-      progress: 100,
-      status: "completed",
-      thumbnail: "https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=400",
-      lessons: 10,
-      completedLessons: 10,
-      duration: "3h 45min",
-      instructor: "Beatriz Lima"
-    },
-    {
-      id: 4,
-      title: "Gestão Financeira Pessoal",
-      progress: 100,
-      status: "completed",
-      thumbnail: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400",
-      lessons: 8,
-      completedLessons: 8,
-      duration: "2h 30min",
-      instructor: "Juliana Costa"
-    },
-    {
-      id: 5,
-      title: "Desenvolvimento Pessoal e Liderança",
-      progress: 20,
-      status: "in-progress",
-      thumbnail: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400",
-      lessons: 14,
-      completedLessons: 3,
-      duration: "5h 20min",
-      instructor: "Ana Santos"
-    }
-  ];
+  const [courses, setCourses] = useState<EnrolledCourse[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const inProgressCourses = courses.filter(c => c.status === "in-progress");
-  const completedCourses = courses.filter(c => c.status === "completed");
+  useEffect(() => {
+    coursesService.listMyCourses()
+      .then((data: any[]) => setCourses(data))
+      .catch(err => console.error("Failed to load courses", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return <div className="p-4 text-center">Carregando seus cursos...</div>;
+  }
+
+  const inProgressCourses = courses.filter(c => c.enrollment.status === "active" || c.enrollment.status === "in_progress"); // Backend default is "active"
+  const completedCourses = courses.filter(c => c.enrollment.status === "completed");
 
   return (
     <div className="container-fluid p-4">
@@ -133,7 +100,7 @@ export function StudentMyCourses({ onNavigate }: MyCoursesProps) {
                 </div>
                 <div>
                   <div className="text-muted small">Horas Assistidas</div>
-                  <h4 className="mb-0">22h</h4>
+                  <h4 className="mb-0">0h</h4>
                 </div>
               </div>
             </div>
@@ -144,58 +111,62 @@ export function StudentMyCourses({ onNavigate }: MyCoursesProps) {
       {/* Em Andamento */}
       <div className="mb-4">
         <h2 className="h5 mb-3">Em Andamento</h2>
-        <div className="row g-3">
-          {inProgressCourses.map((course) => (
-            <div key={course.id} className="col-md-6 col-lg-4">
-              <div className="card h-100 shadow-sm card-hover">
-                <div className="course-image-container">
-                  <ImageWithFallback
-                    src={course.thumbnail}
-                    alt={course.title}
-                    className="img-cover rounded-top"
-                  />
-                  <div className="position-absolute top-0 end-0 m-2">
-                    <span className="badge bg-warning text-dark">Em andamento</span>
-                  </div>
-                </div>
-                <div className="card-body">
-                  <h5 className="card-title">{course.title}</h5>
-                  <p className="text-muted small mb-3">Por {course.instructor}</p>
-
-                  <div className="mb-3">
-                    <div className="d-flex justify-content-between small text-muted mb-1">
-                      <span>{course.completedLessons} de {course.lessons} aulas</span>
-                      <span>{course.progress}%</span>
-                    </div>
-                    <div className="progress" style={{ height: '6px' }}>
-                      <div
-                        className="progress-bar"
-                        role="progressbar"
-                        style={{ width: `${course.progress}%` }}
-                        aria-valuenow={course.progress}
-                        aria-valuemin={0}
-                        aria-valuemax={100}
-                      ></div>
+        {inProgressCourses.length === 0 ? (
+          <div className="text-muted">Nenhum curso em andamento.</div>
+        ) : (
+          <div className="row g-3">
+            {inProgressCourses.map((course) => (
+              <div key={course.id} className="col-md-6 col-lg-4">
+                <div className="card h-100 shadow-sm card-hover">
+                  <div className="course-image-container">
+                    <ImageWithFallback
+                      src={course.thumbnail_url}
+                      alt={course.title}
+                      className="img-cover rounded-top"
+                    />
+                    <div className="position-absolute top-0 end-0 m-2">
+                      <span className="badge bg-warning text-dark">Em andamento</span>
                     </div>
                   </div>
+                  <div className="card-body">
+                    <h5 className="card-title">{course.title}</h5>
+                    <p className="text-muted small mb-3">Por {course.instructor.name}</p>
 
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span className="text-muted small">
-                      <Clock size={14} className="me-1" />
-                      {course.duration}
-                    </span>
-                    <button
-                      onClick={() => onNavigate("course-player", { courseId: course.id })}
-                      className="btn btn-primary btn-sm"
-                    >
-                      Continuar
-                    </button>
+                    <div className="mb-3">
+                      <div className="d-flex justify-content-between small text-muted mb-1">
+                        <span>{course.enrollment.completed_lessons} de {course.enrollment.total_lessons} aulas</span>
+                        <span>{Number(course.enrollment.progress)}%</span>
+                      </div>
+                      <div className="progress" style={{ height: '6px' }}>
+                        <div
+                          className="progress-bar"
+                          role="progressbar"
+                          style={{ width: `${course.enrollment.progress}%` }}
+                          aria-valuenow={Number(course.enrollment.progress)}
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div className="d-flex justify-content-between align-items-center">
+                      <span className="text-muted small">
+                        <Clock size={14} className="me-1" />
+                        {course.duration_minutes} min
+                      </span>
+                      <button
+                        onClick={() => onNavigate("course-player", { courseId: course.slug })} // Pass slug as courseId for consistency with App router
+                        className="btn btn-primary btn-sm"
+                      >
+                        Continuar
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Concluídos */}
@@ -208,7 +179,7 @@ export function StudentMyCourses({ onNavigate }: MyCoursesProps) {
                 <div className="card h-100 shadow-sm card-hover">
                   <div className="course-image-container">
                     <ImageWithFallback
-                      src={course.thumbnail}
+                      src={course.thumbnail_url}
                       alt={course.title}
                       className="img-cover rounded-top"
                     />
@@ -221,11 +192,11 @@ export function StudentMyCourses({ onNavigate }: MyCoursesProps) {
                   </div>
                   <div className="card-body">
                     <h5 className="card-title">{course.title}</h5>
-                    <p className="text-muted small mb-3">Por {course.instructor}</p>
+                    <p className="text-muted small mb-3">Por {course.instructor.name}</p>
 
                     <div className="mb-3">
                       <div className="d-flex justify-content-between small text-muted mb-1">
-                        <span>{course.lessons} aulas</span>
+                        <span>{course.enrollment.total_lessons} aulas</span>
                         <span>100%</span>
                       </div>
                       <div className="progress" style={{ height: '6px' }}>
@@ -240,10 +211,10 @@ export function StudentMyCourses({ onNavigate }: MyCoursesProps) {
                     <div className="d-flex justify-content-between align-items-center">
                       <span className="text-muted small">
                         <Clock size={14} className="me-1" />
-                        {course.duration}
+                        {course.duration_minutes} min
                       </span>
                       <button
-                        onClick={() => onNavigate("course-player", { courseId: course.id })}
+                        onClick={() => onNavigate("course-player", { courseId: course.slug })}
                         className="btn btn-outline-primary btn-sm"
                       >
                         Revisar

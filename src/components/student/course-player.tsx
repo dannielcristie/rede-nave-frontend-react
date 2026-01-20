@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, CheckCircle, Circle, Lock, PlayCircle, Sun, Moon } from "lucide-react";
-import { coursesService, Course, Lesson } from "../../services/coursesService";
+import { useParams } from "react-router-dom";
+import { ArrowLeft, CheckCircle, Circle, PlayCircle, Sun, Moon } from "lucide-react";
+import { coursesService, type Course, type Lesson } from "../../services/coursesService";
 
 interface CoursePlayerProps {
     courseId?: string; // It's actually a slug now usually
@@ -11,13 +11,11 @@ interface CoursePlayerProps {
 export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerProps) {
     const { courseId: paramSlug } = useParams();
     const slug = propCourseId || paramSlug;
-    const navigate = useNavigate();
 
     const [course, setCourse] = useState<Course | null>(null);
     const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
     const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
     const [loading, setLoading] = useState(true);
-    const [loadingLesson, setLoadingLesson] = useState(false);
 
     // Flatten lessons for easier navigation
     const [allLessons, setAllLessons] = useState<Lesson[]>([]);
@@ -57,14 +55,11 @@ export function CoursePlayer({ courseId: propCourseId, onBack }: CoursePlayerPro
     }, [slug]);
 
     const loadLesson = async (lessonId: string) => {
-        setLoadingLesson(true);
         try {
             const lessonData = await coursesService.getLesson(lessonId);
             setCurrentLesson(lessonData);
         } catch (error) {
             console.error("Failed to load lesson", error);
-        } finally {
-            setLoadingLesson(false);
         }
     };
 
