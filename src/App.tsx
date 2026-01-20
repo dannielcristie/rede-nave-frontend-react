@@ -102,13 +102,13 @@ export default function App() {
         } />
         <Route path="my-courses" element={
           userRole === "student" ? (
-            <StudentMyCourses 
+            <StudentMyCourses
               onNavigate={(page, data) => {
-                if (page === "course-player" && data?.courseId) {
-                  navigate(`/course-player/${data.courseId}`);
+                if (page === "course-player" && data && typeof data === 'object' && 'courseId' in data) {
+                  navigate(`/course-player/${(data as { courseId: string | number }).courseId}`);
                 }
-              }} 
-            /> 
+              }}
+            />
           ) : (
             <PlaceholderPage />
           )
