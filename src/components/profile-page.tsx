@@ -10,7 +10,7 @@ export function StudentProfilePage({ userRole }: StudentProfilePageProps) {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  
+
   // Dados mock baseados no role
   const profileData = {
     student: {
@@ -46,7 +46,7 @@ export function StudentProfilePage({ userRole }: StudentProfilePageProps) {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = (event: ProgressEvent<FileReader>) => {
         setProfileImage(event.target?.result as string);
       };
       reader.readAsDataURL(file);
@@ -87,7 +87,7 @@ export function StudentProfilePage({ userRole }: StudentProfilePageProps) {
             <div className="card-body text-center p-4">
               {/* Avatar */}
               <div className="position-relative d-inline-block mb-3">
-                <div 
+                <div
                   className="rounded-circle bg-primary-purple d-flex align-items-center justify-content-center text-white"
                   style={{ width: '120px', height: '120px', fontSize: '48px', backgroundImage: profileImage ? `url(${profileImage})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}
                 >
@@ -100,7 +100,7 @@ export function StudentProfilePage({ userRole }: StudentProfilePageProps) {
                   style={{ display: 'none' }}
                   onChange={handleImageUpload}
                 />
-                <button 
+                <button
                   className="btn btn-sm btn-primary rounded-circle position-absolute bottom-0 end-0"
                   onClick={() => document.getElementById('profileImageInput')?.click()}
                   type="button"
@@ -155,7 +155,7 @@ export function StudentProfilePage({ userRole }: StudentProfilePageProps) {
             <div className="card-header bg-white d-flex justify-content-between align-items-center py-3">
               <h5 className="mb-0">Informações Pessoais</h5>
               {!isEditing ? (
-                <button 
+                <button
                   className="btn btn-primary btn-sm"
                   onClick={() => setIsEditing(true)}
                 >
@@ -163,7 +163,7 @@ export function StudentProfilePage({ userRole }: StudentProfilePageProps) {
                 </button>
               ) : (
                 <div className="d-flex gap-2">
-                  <button 
+                  <button
                     className="btn btn-outline-secondary btn-sm"
                     onClick={() => {
                       setIsEditing(false);
@@ -172,7 +172,7 @@ export function StudentProfilePage({ userRole }: StudentProfilePageProps) {
                   >
                     Cancelar
                   </button>
-                  <button 
+                  <button
                     className="btn btn-primary btn-sm"
                     onClick={handleSave}
                   >

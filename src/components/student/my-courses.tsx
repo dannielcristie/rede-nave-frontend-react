@@ -2,7 +2,7 @@ import { BookOpen, Clock, CheckCircle, PlayCircle } from "lucide-react";
 import { ImageWithFallback } from "../ui/ImageWithFallback";
 
 interface MyCoursesProps {
-  onNavigate: (page: string, data?: any) => void;
+  onNavigate: (page: string, data?: unknown) => void;
 }
 
 export function StudentMyCourses({ onNavigate }: MyCoursesProps) {
@@ -161,7 +161,7 @@ export function StudentMyCourses({ onNavigate }: MyCoursesProps) {
                 <div className="card-body">
                   <h5 className="card-title">{course.title}</h5>
                   <p className="text-muted small mb-3">Por {course.instructor}</p>
-                  
+
                   <div className="mb-3">
                     <div className="d-flex justify-content-between small text-muted mb-1">
                       <span>{course.completedLessons} de {course.lessons} aulas</span>
@@ -222,7 +222,7 @@ export function StudentMyCourses({ onNavigate }: MyCoursesProps) {
                   <div className="card-body">
                     <h5 className="card-title">{course.title}</h5>
                     <p className="text-muted small mb-3">Por {course.instructor}</p>
-                    
+
                     <div className="mb-3">
                       <div className="d-flex justify-content-between small text-muted mb-1">
                         <span>{course.lessons} aulas</span>

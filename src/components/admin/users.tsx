@@ -50,6 +50,7 @@ export function AdminUsers() {
   ];
 
   const getRoleBadge = (role: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const badges: Record<string, { text: string; class: string; icon: any }> = {
       student: { text: "Aluna", class: "bg-primary", icon: User },
       teacher: { text: "Professora", class: "bg-success", icon: GraduationCap },
@@ -59,7 +60,7 @@ export function AdminUsers() {
   };
 
   const getStatusBadge = (status: string) => {
-    return status === "active" 
+    return status === "active"
       ? { text: "Ativo", class: "bg-success" }
       : { text: "Inativo", class: "bg-secondary" };
   };
@@ -174,7 +175,7 @@ export function AdminUsers() {
                   const roleBadge = getRoleBadge(user.role);
                   const statusBadge = getStatusBadge(user.status);
                   const RoleIcon = roleBadge.icon;
-                  
+
                   return (
                     <tr key={user.id}>
                       <td className="ps-4">

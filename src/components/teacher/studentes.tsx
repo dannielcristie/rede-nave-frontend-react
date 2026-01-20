@@ -1,4 +1,4 @@
-import { Search, Filter, Mail, Phone, MoreVertical, TrendingUp, TrendingDown } from "lucide-react";
+import { Search, Mail, Phone, MoreVertical, TrendingUp, TrendingDown } from "lucide-react";
 
 export function TeacherStudents() {
   const students = [
