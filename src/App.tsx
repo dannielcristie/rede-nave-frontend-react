@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Routes, Route, Navigate, useLocation, useNavigate, Outlet } from "react-router-dom";
+import { useAuth } from "./contexts/AuthContext";
 import { Navbar } from "./components/navbar";
 import { About } from "./components/about";
 import { CoursesCarousel } from "./components/courses-carousel";
@@ -70,23 +70,27 @@ function PlaceholderPage() {
 }
 
 export default function App() {
-  const [userRole, setUserRole] = useState<UserRole>(null);
+  const { user, logout, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = (role: UserRole) => {
-    setUserRole(role);
-    navigate("/dashboard");
-  };
+  // Redirect if logged in but on login page? Or handled in Login component?
+  // For now, simple routing.
+
+  if (isLoading) {
+    return <div className="d-flex justify-content-center align-items-center vh-100">Carregando...</div>;
+  }
+
+  const userRole = user?.role || null;
 
   const handleLogout = () => {
-    setUserRole(null);
+    logout();
     navigate("/");
   };
 
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<Login onLogin={handleLogin} onBack={() => navigate("/")} />} />
+      <Route path="/login" element={<Login />} />
 
       <Route path="/course-player/:courseId" element={
         userRole === "student" ? <CoursePlayer onBack={() => navigate("/dashboard")} /> : <Navigate to="/login" />
