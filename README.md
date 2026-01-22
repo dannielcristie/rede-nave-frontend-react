@@ -2,8 +2,15 @@
 
 # Rede Nave - Frontend
 
-Interface web moderna para a plataforma de cursos **Rede Nave**, focada no empoderamento feminino através do empreendedorismo.
+Rede Nave é uma plataforma educacional completa focada no empoderamento feminino através do empreendedorismo. O projeto se destaca por sua arquitetura moderna e robusta, construída com React, TypeScript e Vite, oferecendo uma experiência fluida e performática.
 
+A solução implementa três perfis distintos de usuário (estudante, professor e administrador) com dashboards personalizados, sistema completo de autenticação, player de vídeo-aulas com navegação entre módulos, gestão de certificados e eventos - tudo isso com interface responsiva
+
+Rede Nave combina impacto social com excelência técnica, sendo uma plataforma educacional pronta para transformar vidas através da educação empreendedora.
+
+
+<!-- Interface web moderna para a plataforma de cursos **Rede Nave**, focada no empoderamento feminino através do empreendedorismo.
+ -->
 ## 🚀 Tecnologias
 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
