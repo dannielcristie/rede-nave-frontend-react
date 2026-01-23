@@ -77,6 +77,15 @@ docker compose up -d
 
 ## 🎨 Design Review
 
+![Título do GIF](public/gif1.gif)
+
+![Título do GIF](public/gif2.gif)
+
+![Título do GIF](public/gif3.gif)
+
+![Título do GIF](public/gif4.gif)
+
+
 Link para o Figma oficial do projeto.
 - [Acessar Figma](https://www.figma.com/make/OklaMDG7BoiAJbwmUCSXUJ/Landing-Page-para-Plataforma-de-Curso?node-id=0-1&t=eLY4Jdu0ETNJGxIn-1)
 - [Baixar Assets (.zip)](project.zip)
